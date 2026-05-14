@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkNest — Enterprise Business Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8FAFC; color: #0F172A; }
+        .glass-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(24px); border: 1px solid #E2E8F0; border-radius: 1.5rem; }
+        .sidebar-item-active { background: #4F46E5; color: white; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2); }
+        .btn-primary { background: #4F46E5; color: white; transition: all 0.2s; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2); }
+        .ai-chat-bubble { position: fixed; bottom: 2rem; right: 2rem; z-index: 100; }
+        .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
+    </style>
+</head>
+<body x-data="app()" x-init="init()">
+
+    <!-- LANDING VIEW -->
+    <div x-show="!isLoggedIn && currentView === 'landing'" x-cloak class="min-h-screen bg-white">
+        <nav class="h-24 flex items-center justify-between px-10 max-w-7xl mx-auto">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-100">
+                    <i data-lucide="bot" class="w-7 h-7"></i>
+                </div>
+                <span class="text-2xl font-black tracking-tight">WorkNest</span>
+            </div>
+            <div class="flex items-center gap-8">
+                <button @click="currentView = 'login'" class="text-sm font-bold text-slate-500">Login</button>
+                <button @click="currentView = 'register'" class="btn-primary px-8 py-3 rounded-2xl font-bold">Start Free Trial</button>
+            </div>
+        </nav>
+        <main class="text-center pt-40 px-6 max-w-5xl mx-auto">
+            <div class="inline-block px-4 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-8">Next-Gen Business Intelligence</div>
+            <h1 class="text-8xl font-black tracking-tighter leading-[0.9] mb-12">
+                Unified Business.<br><span class="text-indigo-600">AI Driven.</span>
+            </h1>
+            <p class="text-xl text-slate-500 mb-12 max-w-2xl mx-auto font-medium">Professional-grade dashboard for companies and independent professionals. Fully adaptive workflow tailored to your industry.</p>
+            <div class="flex justify-center gap-4">
+                <button @click="currentView = 'register'" class="btn-primary px-14 py-6 rounded-[2.5rem] text-xl font-black">Get Started Now</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- REGISTRATION & DASHBOARD (TAILORED FLOW) -->
+    <div x-show="!isLoggedIn && (currentView === 'register' || currentView === 'login')" x-cloak class="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+        <!-- Register Content -->
+        <div x-show="currentView === 'register'" class="w-full max-w-xl bg-white p-12 rounded-[3rem] shadow-2xl border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-slate-100"><div class="h-full bg-indigo-600 transition-all duration-700" :style="'width:' + (regStep * 33.33) + '%'"></div></div>
+            <div x-show="regStep === 1" class="space-y-8">
+                <div class="text-center"><h2 class="text-4xl font-black tracking-tight mb-2">Create Account</h2><p class="text-slate-400 font-medium">Start your 7-day enterprise trial</p></div>
+                <div class="space-y-4">
+                    <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-[0.2em]">Full Name</label><input type="text" x-model="authForm.name" class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none"></div>
+                    <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-[0.2em]">Email Address</label><input type="email" x-model="authForm.email" class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none"></div>
+                    <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-[0.2em]">Password</label><input type="password" x-model="authForm.password" class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none"></div>
+                </div>
+                <button @click="regStep = 2" class="w-full btn-primary py-5 rounded-3xl font-black text-lg">Continue</button>
+            </div>
+            <div x-show="regStep === 2" x-cloak class="space-y-10">
+                <div class="text-center"><h2 class="text-4xl font-black tracking-tight mb-2">Business Type</h2><p class="text-slate-400 font-medium">Select your workspace configuration</p></div>
+                <div class="grid grid-cols-2 gap-6">
+                    <button @click="authForm.accountType = 'company'; regStep = 3" class="p-8 rounded-[2.5rem] border-2 transition-all flex flex-col items-center gap-5 group" :class="authForm.accountType === 'company' ? 'border-indigo-600 bg-indigo-50/50' : 'border-slate-100 hover:border-indigo-200'"><div class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-xl text-indigo-600"><i data-lucide="building-2" class="w-10 h-10"></i></div><span class="font-black text-lg">Company</span></button>
+                    <button @click="authForm.accountType = 'professional'; regStep = 3" class="p-8 rounded-[2.5rem] border-2 transition-all flex flex-col items-center gap-5 group" :class="authForm.accountType === 'professional' ? 'border-indigo-600 bg-indigo-50/50' : 'border-slate-100 hover:border-indigo-200'"><div class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-xl text-indigo-600"><i data-lucide="user-round" class="w-10 h-10"></i></div><span class="font-black text-lg">Professional</span></button>
+                </div>
+                <button @click="regStep = 1" class="w-full py-4 text-slate-400 font-bold hover:text-slate-600">Back</button>
+            </div>
+            <div x-show="regStep === 3" x-cloak class="space-y-10">
+                <div class="text-center"><h2 class="text-4xl font-black tracking-tight mb-2" x-text="authForm.accountType === 'company' ? 'Industry' : 'Profession'"></h2><p class="text-slate-400 font-medium">Tailoring your dashboard...</p></div>
+                <div class="space-y-6">
+                    <template x-if="authForm.accountType === 'company'"><div><label class="block text-[10px] font-black text-slate-400 uppercase mb-3 tracking-[0.2em]">Select Industry</label><select x-model="authForm.industry" class="w-full px-8 py-5 rounded-3xl bg-slate-50 border border-slate-100 outline-none font-bold"><option value="Technology">Technology & Software</option><option value="E-commerce">Retail & E-commerce</option><option value="Hospitality">Hospitality & Food</option><option value="Real Estate">Real Estate & Construction</option></select></div></template>
+                    <template x-if="authForm.accountType === 'professional'"><div><label class="block text-[10px] font-black text-slate-400 uppercase mb-3 tracking-[0.2em]">Select Specialty</label><select x-model="authForm.profession" class="w-full px-8 py-5 rounded-3xl bg-slate-50 border border-slate-100 outline-none font-bold"><option value="Freelancer">Independent Consultant</option><option value="Craftsman">Artisan / Technician</option><option value="Creative">Designer / Creative</option><option value="Advisor">Legal / Financial Advisor</option></select></div></template>
+                </div>
+                <button @click="completeRegistration()" class="w-full btn-primary py-6 rounded-[2rem] font-black text-xl">Finish Setup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <div x-show="isLoggedIn" x-cloak class="flex min-h-screen">
+        <aside class="w-80 bg-white border-r border-slate-200 p-8 flex flex-col sticky top-0 h-screen z-50">
+            <div class="flex items-center gap-3 mb-12"><div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-100"><i data-lucide="bot" class="w-7 h-7"></i></div><span class="text-2xl font-black tracking-tight">WorkNest</span></div>
+            <nav class="space-y-2 flex-1">
+                <template x-for="item in menuItems">
+                    <template x-if="shouldShowMenuItem(item)">
+                        <button @click="activeModule = item.id; if(item.id === 'overview') initCharts()" :class="activeModule === item.id ? 'sidebar-item-active' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition-all group">
+                            <i :data-lucide="item.icon" class="w-5 h-5 transition-transform group-hover:scale-110"></i><span x-text="item.name"></span>
+                        </button>
+                    </template>
+                </template>
+            </nav>
+            <div class="pt-8 border-t border-slate-100"><button @click="logout()" class="flex items-center gap-4 p-4 text-slate-400 font-bold hover:text-rose-500 transition-colors w-full"><i data-lucide="log-out" class="w-5 h-5"></i> Logout</button></div>
+        </aside>
+
+        <main class="flex-1 bg-slate-50/30 overflow-y-auto relative">
+            <!-- Header -->
+            <header class="h-24 px-10 flex items-center justify-between bg-white/90 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-200">
+                <div><h2 class="text-2xl font-black tracking-tight text-slate-900" x-text="menuItems.find(m => m.id === activeModule)?.name"></h2><p class="text-[10px] text-indigo-600 font-black uppercase tracking-[0.3em] mt-0.5" x-text="authForm.accountType === 'company' ? authForm.industry + ' Enterprise' : authForm.profession + ' Workspace'"></p></div>
+                <div class="flex items-center gap-6">
+                    <!-- Notifications -->
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 relative">
+                            <i data-lucide="bell" class="w-5 h-5 text-slate-400"></i>
+                            <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+                        </button>
+                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-4 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 z-[60]">
+                            <h4 class="font-black text-sm uppercase tracking-widest mb-4">Notifications</h4>
+                            <div class="space-y-4">
+                                <div class="flex gap-3"><div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600"><i data-lucide="sparkles" class="w-4 h-4"></i></div><div><p class="text-xs font-bold">New AI Insight generated</p><p class="text-[10px] text-slate-400">2 mins ago</p></div></div>
+                                <div class="flex gap-3"><div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600"><i data-lucide="check-circle" class="w-4 h-4"></i></div><div><p class="text-xs font-bold">Payment of $5,000 received</p><p class="text-[10px] text-slate-400">1 hour ago</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 font-black" x-text="(authForm.name || 'A')[0]"></div>
+                </div>
+            </header>
+
+            <div class="p-10 max-w-7xl mx-auto space-y-10">
+                <!-- MODULE: OVERVIEW -->
+                <div x-show="activeModule === 'overview'" class="space-y-10">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="glass-card p-8"><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Net Cashflow</p><h3 class="text-4xl font-black tracking-tighter" x-text="'$' + stats.revenue.toLocaleString()"></h3><div class="flex items-center gap-1.5 text-emerald-500 font-black text-[10px] mt-4 uppercase"><i data-lucide="trending-up" class="w-3 h-3"></i> +18.4% Monthly</div></div>
+                        <template x-if="authForm.accountType === 'company'"><div class="glass-card p-8"><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Staff Costs</p><h3 class="text-4xl font-black tracking-tighter" x-text="'$' + stats.payroll.toLocaleString()"></h3><div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden"><div class="bg-indigo-600 h-full w-2/3"></div></div></div></template>
+                        <template x-if="authForm.accountType === 'professional'"><div class="glass-card p-8"><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Billable Capacity</p><h3 class="text-4xl font-black tracking-tighter">84.2%</h3><div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden"><div class="bg-indigo-600 h-full w-4/5"></div></div></div></template>
+                        <div class="glass-card p-8 bg-indigo-600 text-white border-none shadow-2xl shadow-indigo-200"><p class="text-[10px] font-black opacity-60 uppercase tracking-widest mb-3">AI Intelligence Advisor</p><p class="text-sm font-bold leading-relaxed italic" x-text="getAiInsight()"></p></div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="glass-card p-8"><h4 class="text-sm font-black uppercase tracking-widest mb-8 text-slate-400">Financial Growth Engine</h4><div class="chart-container"><canvas id="revenueChart"></canvas></div></div>
+                        <div class="glass-card p-8"><h4 class="text-sm font-black uppercase tracking-widest mb-8 text-slate-400">Resource Allocation</h4><div class="chart-container"><canvas id="distributionChart"></canvas></div></div>
+                    </div>
+                </div>
+
+                <!-- MODULE: FINANCES (DYNAMIC) -->
+                <div x-show="activeModule === 'finances'" class="space-y-8">
+                    <div class="flex justify-between items-center"><h3 class="text-3xl font-black tracking-tight">Ledger Operations</h3><button class="bg-indigo-600 text-white px-8 py-3 rounded-2xl font-black text-sm">+ New Entry</button></div>
+                    <div class="glass-card overflow-hidden">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50/50 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] border-b border-slate-100"><tr><th class="px-10 py-6">Reference</th><th class="px-10 py-6">Sector</th><th class="px-10 py-6 text-right">Value</th></tr></thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <template x-for="t in transactions"><tr class="hover:bg-slate-50/50 transition-colors"><td class="px-10 py-6 font-black text-slate-900" x-text="t.desc"></td><td class="px-10 py-6 text-xs font-bold text-slate-400" x-text="t.cat"></td><td class="px-10 py-6 text-right font-black text-lg" :class="t.type === 'income' ? 'text-emerald-500' : 'text-slate-900'" x-text="'$' + t.amount.toLocaleString()"></td></tr></template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- AI CHAT BUBBLE (WOW FACTOR) -->
+    <div class="ai-chat-bubble" x-data="{ open: false, messages: [] }">
+        <button @click="open = !open; if(messages.length === 0) addAiMessage()" class="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-2xl shadow-indigo-400 animate-pulse-slow">
+            <i x-show="!open" data-lucide="sparkles" class="w-8 h-8"></i>
+            <i x-show="open" data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <div x-show="open" x-cloak class="absolute bottom-20 right-0 w-96 bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(79,70,229,0.3)] border border-slate-100 overflow-hidden flex flex-col max-h-[500px]">
+            <div class="p-6 bg-indigo-600 text-white">
+                <h4 class="font-black font-outfit text-lg">WorkNest AI Advisor</h4>
+                <p class="text-xs opacity-80">Strategic business intelligence live</p>
+            </div>
+            <div class="flex-1 p-6 overflow-y-auto space-y-4 min-h-[300px]">
+                <template x-for="m in messages">
+                    <div :class="m.role === 'ai' ? 'bg-slate-50 text-slate-800' : 'bg-indigo-600 text-white ml-auto'" class="p-4 rounded-2xl text-xs font-bold max-w-[80%]">
+                        <span x-text="m.text"></span>
+                    </div>
+                </template>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex gap-2">
+                <input type="text" placeholder="Ask AI anything..." class="flex-1 bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs outline-none">
+                <button class="p-2 bg-indigo-600 text-white rounded-xl"><i data-lucide="send" class="w-4 h-4"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function app() {
+            return {
+                currentView: 'landing', isLoggedIn: false, regStep: 1, activeModule: 'overview',
+                authForm: { name: '', email: '', password: '', accountType: 'professional', industry: 'Technology', profession: 'Freelancer' },
+                stats: { revenue: 124500, expenses: 32400, payroll: 28000 },
+                revenueChart: null, distributionChart: null,
+                menuItems: [
+                    { id: 'overview', name: 'Dashboard', icon: 'layout-grid', role: 'all' },
+                    { id: 'finances', name: 'Finances', icon: 'bar-chart-3', role: 'all' },
+                    { id: 'inventory', name: 'Inventory', icon: 'database', role: 'company' },
+                    { id: 'employees', name: 'Staff', icon: 'users', role: 'company' },
+                    { id: 'clients', name: 'Clients', icon: 'briefcase', role: 'professional' },
+                    { id: 'projects', name: 'Projects', icon: 'zap', role: 'all' },
+                ],
+                transactions: [
+                    { desc: 'Global Sales Q2', cat: 'Revenue', type: 'income', amount: 85000 },
+                    { desc: 'Office Expansion', cat: 'Capex', type: 'expense', amount: 22000 },
+                    { desc: 'AI API Subscription', cat: 'SaaS', type: 'expense', amount: 500 }
+                ],
+                init() { lucide.createIcons(); },
+                completeRegistration() { this.isLoggedIn = true; this.initCharts(); setTimeout(() => lucide.createIcons(), 100); },
+                logout() { this.isLoggedIn = false; this.currentView = 'landing'; this.regStep = 1; },
+                shouldShowMenuItem(item) { if (item.role === 'all') return true; return item.role === this.authForm.accountType; },
+                getAiInsight() {
+                    return this.authForm.accountType === 'company' ? `"Industry data shows a 12% rise in ${this.authForm.industry} demand. We recommend scaling your Q3 hiring plan."` : `"As a ${this.authForm.profession}, your efficiency is top 5%. You should raise your project baseline by 15%."`;
+                },
+                addAiMessage() {
+                    this.$data.messages.push({ role: 'ai', text: `Hello ${this.authForm.name || 'User'}! I'm your WorkNest advisor. Based on your profile as a ${this.authForm.accountType}, I've prepared a growth strategy for you. Should we review it?` });
+                    setTimeout(() => lucide.createIcons(), 50);
+                },
+                initCharts() {
+                    this.$nextTick(() => {
+                        const revCtx = document.getElementById('revenueChart').getContext('2d');
+                        if (this.revenueChart) this.revenueChart.destroy();
+                        this.revenueChart = new Chart(revCtx, {
+                            type: 'line',
+                            data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: 'Growth', data: [40, 55, 52, 80, 75, 124], borderColor: '#4F46E5', backgroundColor: 'rgba(79, 70, 229, 0.05)', fill: true, tension: 0.4, borderWidth: 5, pointRadius: 0 }] },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, border: { display: false } } } }
+                        });
+                        const distCtx = document.getElementById('distributionChart').getContext('2d');
+                        if (this.distributionChart) this.distributionChart.destroy();
+                        this.distributionChart = new Chart(distCtx, {
+                            type: 'doughnut',
+                            data: { labels: ['Operations', 'Growth', 'R&D'], datasets: [{ data: [60, 25, 15], backgroundColor: ['#4F46E5', '#818CF8', '#C7D2FE'], borderWidth: 0, cutout: '85%' }] },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 25, font: { weight: 'bold', size: 10 } } } } }
+                        });
+                        lucide.createIcons();
+                    });
+                }
+            }
+        }
+    </script>
+</body>
+</html>

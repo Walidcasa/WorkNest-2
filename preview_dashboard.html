@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkNest — Preview Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-outfit { font-family: 'Outfit', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-[#F3F4F6] text-[#374151]">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-72 bg-white border-r border-gray-200 p-6 hidden lg:block">
+            <div class="flex items-center gap-2 mb-10">
+                <div class="w-10 h-10 bg-[#818CF8] rounded-xl flex items-center justify-center shadow-lg shadow-[#818CF8]/30 text-white">
+                    <i data-lucide="bot" class="w-6 h-6"></i>
+                </div>
+                <span class="text-2xl font-bold font-outfit">WorkNest</span>
+            </div>
+            <nav class="space-y-2">
+                <a href="#" class="flex items-center gap-3 p-3 bg-gray-100 text-[#818CF8] rounded-xl font-semibold">
+                    <i data-lucide="layout-dashboard"></i> Overview
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 text-gray-400 hover:bg-gray-50 rounded-xl transition-all">
+                    <i data-lucide="wallet"></i> Finances
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 text-gray-400 hover:bg-gray-50 rounded-xl transition-all">
+                    <i data-lucide="package"></i> Inventory
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 text-gray-400 hover:bg-gray-50 rounded-xl transition-all">
+                    <i data-lucide="sparkles"></i> AI Insights
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 text-gray-400 hover:bg-gray-50 rounded-xl transition-all">
+                    <i data-lucide="briefcase"></i> Projects
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <header class="flex justify-between items-center mb-10">
+                <div>
+                    <h1 class="text-3xl font-bold font-outfit">Dashboard Overview</h1>
+                    <p class="text-gray-400">Welcome back, John Doe.</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="p-2 bg-white rounded-xl shadow-sm border border-gray-100">
+                        <i data-lucide="bell" class="w-5 h-5 text-gray-400"></i>
+                    </button>
+                    <div class="h-10 w-10 rounded-full bg-[#60A5FA]/20 flex items-center justify-center">
+                        <i data-lucide="user" class="w-6 h-6 text-[#60A5FA]"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- KPI Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="glass-card p-6 bg-white">
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-sm font-medium text-gray-400">Monthly Revenue</p>
+                        <span class="text-green-500 bg-green-50 px-2 py-1 rounded text-xs font-bold">+12%</span>
+                    </div>
+                    <h3 class="text-3xl font-bold font-outfit">$17,260</h3>
+                    <div class="mt-4 h-1 bg-gray-100 rounded-full overflow-hidden">
+                        <div class="bg-[#818CF8] h-full w-[70%]"></div>
+                    </div>
+                </div>
+                <div class="glass-card p-6 bg-white">
+                    <p class="text-sm font-medium text-gray-400 mb-4">Total Profit</p>
+                    <h3 class="text-3xl font-bold font-outfit">$8,450</h3>
+                    <div class="mt-4 h-1 bg-gray-100 rounded-full overflow-hidden">
+                        <div class="bg-green-400 h-full w-[45%]"></div>
+                    </div>
+                </div>
+                <div class="glass-card p-8 bg-[#818CF8] text-white border-none shadow-xl shadow-[#818CF8]/20">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                        <span class="font-bold">AI Advisor</span>
+                    </div>
+                    <p class="text-sm opacity-90 leading-relaxed">
+                        "Your revenue is up! I recommend increasing your ads budget for next week."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="glass-card p-8 bg-white">
+                <h3 class="text-xl font-bold font-outfit mb-6">Recent Transactions</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="arrow-up-right"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold">Web Design Project</p>
+                                <p class="text-xs text-gray-400">May 12, 2024</p>
+                            </div>
+                        </div>
+                        <span class="font-bold text-green-500">+$5,000</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-red-100 text-red-600 rounded-xl flex items-center justify-center">
+                                <i data-lucide="arrow-down-right"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold">Office Rent</p>
+                                <p class="text-xs text-gray-400">May 10, 2024</p>
+                            </div>
+                        </div>
+                        <span class="font-bold text-red-500">-$1,200</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

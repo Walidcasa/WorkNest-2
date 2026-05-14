@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  passwordHash  String
+  name          String
+  phoneNumber   String?
+  emailVerified Boolean       @default(false)
+  verifyToken   String?
+  role          Role          @default(USER)
+  accountType   AccountType   
+  industry      String?       
+  profession    String?       
+  countryCode   String?       @default("+1")
+  currency      String        @default("USD")
+  language      String        @default("en")
+  theme         String        @default("light")
+  plan          Plan          @default(FREE_TRIAL)
+  trialEndsAt   DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  subscription  Subscription?
+  finances      Finance[]
+  products      Product[]
+  employees     Employee[]
+  clients       Client[]
+  projects      Project[]
+  aiInsights    AiInsight[]
+  notifications Notification[]
+  transactions  Transaction[]
+  activities    Activity[]
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum AccountType {
+  COMPANY
+  PERSONAL
+}
+
+enum Plan {
+  FREE_TRIAL
+  MONTHLY
+  YEARLY
+  EXPIRED
+}
+
+enum ProductivityLevel {
+  PRODUCTIVE
+  NEUTRAL
+  WASTE
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  type        FinanceType
+  amount      Float
+  category    String
+  label       String
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model Activity {
+  id        String            @id @default(cuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id])
+  name      String
+  category  String
+  level     ProductivityLevel
+  duration  Int
+  startTime DateTime?
+  endTime   DateTime?
+  date      DateTime          @default(now())
+  createdAt DateTime          @default(now())
+}
+
+model Finance {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  type        FinanceType
+  amount      Float
+  category    String
+  description String?
+  date        DateTime
+  createdAt   DateTime    @default(now())
+}
+
+enum FinanceType {
+  REVENUE
+  EXPENSE
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  name          String
+  purchasePrice Float
+  sellingPrice  Float
+  stock         Int
+  sold          Int      @default(0)
+  supplier      String?
+  purchaseDate  DateTime?
+  lowStockAt    Int      @default(5)
+  createdAt     DateTime @default(now())
+}
+
+model Employee {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  name          String
+  position      String
+  salary        Float
+  workSchedule  String?
+  paymentStatus PayStatus @default(PENDING)
+  createdAt     DateTime  @default(now())
+}
+
+enum PayStatus {
+  PENDING
+  PAID
+  PARTIAL
+}
+
+model Client {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  name           String
+  phone          String?
+  email          String?
+  totalPaid      Float    @default(0)
+  remainingBalance Float  @default(0)
+  notes          String?
+  createdAt      DateTime @default(now())
+  projects       Project[]
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  clientId    String?
+  client      Client?       @relation(fields: [clientId], references: [id])
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  deadline    DateTime?
+  progress    Int           @default(0)
+  status      ProjectStatus @default(TODO)
+  createdAt   DateTime      @default(now())
+}
+
+enum ProjectStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+  DELAYED
+}
+
+model Subscription {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id])
+  stripeCustomerId String?
+  stripePriceId    String?
+  paypalOrderId    String?
+  plan             Plan
+  status           SubStatus
+  currentPeriodEnd DateTime
+  createdAt        DateTime @default(now())
+}
+
+enum SubStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  TRIALING
+}
+
+model AiInsight {
+  id        String      @id @default(cuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+  type      InsightType
+  content   String
+  createdAt DateTime    @default(now())
+}
+
+enum InsightType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  ALERT
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

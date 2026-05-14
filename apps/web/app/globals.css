@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 55, 65, 81;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 243, 244, 246;
+
+  --color-primary: 255 255 255;      /* #FFFFFF */
+  --color-secondary: 243 244 246;    /* #F3F4F6 */
+  --color-accent1: 96 165 250;       /* #60A5FA */
+  --color-accent2: 129 140 248;      /* #818CF8 */
+  --color-accent3: 103 232 249;      /* #67E8F9 */
+  --color-success: 74 222 128;       /* #4ADE80 */
+  --color-warning: 253 186 116;      /* #FDBA74 */
+  --color-danger: 252 165 165;       /* #FCA5A5 */
+  --color-text: 55 65 81;            /* #374151 */
+}
+
+.dark {
+  --foreground-rgb: 229, 231, 235;
+  --background-start-rgb: 17, 24, 39;
+  --background-end-rgb: 31, 41, 55;
+
+  --color-primary: 31 41 55;         /* Gray 800 */
+  --color-secondary: 17 24 39;       /* Gray 900 */
+  --color-accent1: 96 165 250;       /* Keep bright for contrast */
+  --color-accent2: 129 140 248;
+  --color-accent3: 103 232 249;
+  --color-success: 74 222 128;
+  --color-warning: 253 186 116;
+  --color-danger: 252 165 165;
+  --color-text: 229 231 235;         /* Gray 200 */
+}
+
+body {
+  color: rgb(var(--color-text));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg rounded-2xl;
+  }
+  
+  .btn-primary {
+    @apply bg-accent2 text-white px-6 py-2 rounded-xl font-medium transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .nav-link {
+    @apply text-text/70 hover:text-accent2 transition-colors font-medium;
+  }
+}
