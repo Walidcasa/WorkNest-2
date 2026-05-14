@@ -8,7 +8,7 @@ async function bootstrap() {
     app.setGlobalPrefix('v1');
     app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, transform: true }));
     app.enableCors();
-    await app.listen(4000, '0.0.0.0');
+    await app.listen(process.env.PORT || 4000, '0.0.0.0');
     console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
