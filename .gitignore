@@ -3,7 +3,7 @@ node_modules
 .pnpm-store
 
 # next.js
-/.next/
+.next/
 /out/
 
 # production
@@ -27,3 +27,5 @@ yarn-error.log*
 
 # turbo
 .turbo
+.vercel
+.env*.local

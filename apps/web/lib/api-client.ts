@@ -33,10 +33,14 @@ export const dashboardApi = {
   getProjects: () => apiRequest('/projects'),
   getClients: () => apiRequest('/clients'),
   getAiInsights: () => apiRequest('/ai/insights'),
+  addClient: (data: any) => apiRequest('/clients', { method: 'POST', body: JSON.stringify(data) }),
+  addEmployee: (data: any) => apiRequest('/employees', { method: 'POST', body: JSON.stringify(data) }),
+  addTransaction: (data: any) => apiRequest('/transactions', { method: 'POST', body: JSON.stringify(data) }),
+  addProject: (data: any) => apiRequest('/projects', { method: 'POST', body: JSON.stringify(data) }),
 };
 
 export const clarityApi = {
-  getTransactions: (query = {}) => apiRequest('/transactions', { method: 'GET' }),
+  getTransactions: () => apiRequest('/transactions', { method: 'GET' }),
   getCashSummary: () => apiRequest('/transactions/summary'),
   getTodayActivities: () => apiRequest('/activities/today'),
   getFocusScore: () => apiRequest('/activities/focus-score'),
