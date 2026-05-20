@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Sidebar } from '@/components/dashboard/sidebar'
-import { Bell, Search, Menu, X, HelpCircle } from 'lucide-react'
+import { Bell, Search, Menu, X, HelpCircle, Loader2 } from 'lucide-react'
 import { useTranslation } from '@/components/providers/i18n-provider'
 import { SupportModal } from '@/components/dashboard/support-modal'
 
@@ -12,12 +13,19 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const { t } = useTranslation()
+  const router = useRouter()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isSupportOpen, setIsSupportOpen] = useState(false)
   const [userName, setUserName] = useState('')
   const [userAvatar, setUserAvatar] = useState('')
+  const [authChecked, setAuthChecked] = useState(false)
 
   useEffect(() => {
+    const token = localStorage.getItem('worknest_token')
+    if (!token) {
+      router.replace('/login')
+      return
+    }
     const stored = localStorage.getItem('worknest_user')
     if (stored) {
       try {
@@ -26,13 +34,20 @@ export default function DashboardLayout({
         setUserAvatar(u.avatar || '')
       } catch {}
     }
+    setAuthChecked(true)
     const onAvatarChange = () => {
       const s = localStorage.getItem('worknest_user')
       if (s) { try { setUserAvatar(JSON.parse(s).avatar || '') } catch {} }
     }
     window.addEventListener('worknest_avatar_changed', onAvatarChange)
     return () => window.removeEventListener('worknest_avatar_changed', onAvatarChange)
-  }, [])
+  }, [router])
+
+  if (!authChecked) return (
+    <div className="h-screen flex items-center justify-center bg-secondary/30">
+      <Loader2 className="w-10 h-10 text-accent2 animate-spin" />
+    </div>
+  )
 
   return (
     <div className="flex min-h-screen bg-secondary/30">
