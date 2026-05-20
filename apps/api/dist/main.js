@@ -2,25 +2,34 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const http = require("http");
 const PORT = parseInt(process.env.PORT || '10000', 10);
-let status = 'starting';
+let statusInfo = { phase: 'starting', error: null };
 const server = http.createServer((_req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end(`WorkNest API [${status}]`);
+    const body = JSON.stringify({
+        phase: statusInfo.phase,
+        error: statusInfo.error,
+        node: process.version,
+        port: PORT,
+        env: process.env.NODE_ENV,
+    });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(body);
 });
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`HTTP server bound on port ${PORT}`);
+    console.log(`Diagnostic server on port ${PORT}`);
 });
 async function bootstrap() {
-    status = 'loading modules';
+    statusInfo.phase = 'importing nestjs';
     const { NestFactory } = await Promise.resolve().then(() => require('@nestjs/core'));
+    statusInfo.phase = 'importing app module';
     const { AppModule } = await Promise.resolve().then(() => require('./app.module'));
+    statusInfo.phase = 'importing common';
     const { ValidationPipe } = await Promise.resolve().then(() => require('@nestjs/common'));
-    status = 'creating app';
+    statusInfo.phase = 'creating nest app';
     const app = await NestFactory.create(AppModule, { rawBody: true });
     app.setGlobalPrefix('v1');
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
     app.enableCors();
-    status = 'switching server';
+    statusInfo.phase = 'switching server';
     await new Promise((resolve, reject) => {
         server.close((err) => (err ? reject(err) : resolve()));
     });
@@ -28,11 +37,12 @@ async function bootstrap() {
     httpAdapter.get('/health', (_req, res) => res.send('OK'));
     httpAdapter.get('/', (_req, res) => res.send('WorkNest API'));
     await app.listen(PORT, '0.0.0.0');
-    status = 'live';
+    statusInfo.phase = 'live';
     console.log(`NestJS live on port ${PORT}`);
 }
 bootstrap().catch((err) => {
-    status = `error: ${err?.message || err}`;
-    console.error('Bootstrap failed:', err);
+    statusInfo.phase = 'crashed';
+    statusInfo.error = err?.stack || String(err);
+    console.error('Bootstrap crashed:', err);
 });
 //# sourceMappingURL=main.js.map
