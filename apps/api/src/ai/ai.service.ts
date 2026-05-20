@@ -36,10 +36,10 @@ export class AiService {
     const totalExpense = user.transactions?.filter(t => t.type === 'EXPENSE').reduce((a, b) => a + b.amount, 0) || 0;
     const profit = totalRevenue - totalExpense;
 
-    const productiveTime = user.activities?.filter(a => a.level === 'PRODUCTIVE').reduce((a, b) => a + a.duration, 0) || 0;
-    const wasteTime = user.activities?.filter(a => a.level === 'WASTE').reduce((a, b) => a + a.duration, 0) || 0;
+    const productiveTime = user.activities?.filter(a => a.level === 'PRODUCTIVE').reduce((acc, b) => acc + b.duration, 0) || 0;
+    const wasteTime = user.activities?.filter(a => a.level === 'WASTE').reduce((acc, b) => acc + b.duration, 0) || 0;
 
-    const activeClients = user.clients?.filter(c => c.status === 'Active').length || 0;
+    const activeClients = user.clients?.filter((c: any) => c.status === 'Active').length || 0;
     const lowStockProducts = user.products?.filter(p => p.stock <= p.lowStockAt).length || 0;
 
     const systemPrompt = `You are an elite AI Business Advisor for a SaaS platform called WorkNest/Clarity. 

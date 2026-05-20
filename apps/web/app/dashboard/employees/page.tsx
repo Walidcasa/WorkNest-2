@@ -35,7 +35,7 @@ export default function EmployeesPage() {
   )
 
   const totalPayroll = employees.reduce((acc, curr) => acc + (curr.salary || 0), 0)
-  const pendingPayments = employees.filter(e => e.status !== 'PAID').length
+  const pendingPayments = employees.filter(e => e.paymentStatus !== 'PAID').length
 
   if (loading && employees.length === 0) return (
     <div className="h-[60vh] flex items-center justify-center">
@@ -123,7 +123,7 @@ export default function EmployeesPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-accent2/10 text-accent2 rounded-full flex items-center justify-center font-bold">
-                        {e.avatar}
+                        {e.avatar || e.name?.charAt(0).toUpperCase()}
                       </div>
                       <p className="font-bold text-text">{e.name}</p>
                     </div>
@@ -132,10 +132,10 @@ export default function EmployeesPage() {
                   <td className="px-6 py-4 text-sm font-semibold">${e.salary.toLocaleString()}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
-                      e.status === 'PAID' ? 'bg-success/10 text-success' : 
-                      e.status === 'PENDING' ? 'bg-warning/10 text-warning' : 'bg-accent1/10 text-accent1'
+                      e.paymentStatus === 'PAID' ? 'bg-success/10 text-success' :
+                      e.paymentStatus === 'PENDING' ? 'bg-warning/10 text-warning' : 'bg-accent1/10 text-accent1'
                     }`}>
-                      {e.status}
+                      {e.paymentStatus}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">

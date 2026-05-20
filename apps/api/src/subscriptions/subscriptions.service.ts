@@ -5,17 +5,15 @@ import Stripe from 'stripe';
 
 @Injectable()
 export class SubscriptionsService {
-  private stripe: Stripe;
+  private stripe: any;
   private readonly logger = new Logger(SubscriptionsService.name);
 
   constructor(
     private prisma: PrismaService,
     private configService: ConfigService,
   ) {
-    this.stripe = new Stripe(
-      this.configService.get<string>('STRIPE_SECRET_KEY') || 'sk_test_mock',
-      { apiVersion: '2023-10-16' }
-    );
+    const key = this.configService.get<string>('STRIPE_SECRET_KEY') || 'sk_test_mock';
+    this.stripe = new (Stripe as any)(key, { apiVersion: '2023-10-16' });
   }
 
   async getPlans() {
@@ -49,12 +47,14 @@ export class SubscriptionsService {
 
     const now = new Date();
     const isTrialActive = user.plan === 'FREE_TRIAL' && user.trialEndsAt && user.trialEndsAt > now;
-    
+
     return {
       plan: user.plan,
       trialEndsAt: user.trialEndsAt,
       isTrialActive,
-      daysLeft: user.trialEndsAt ? Math.ceil((user.trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : 0,
+      daysLeft: user.trialEndsAt
+        ? Math.ceil((user.trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        : 0,
     };
   }
 
@@ -64,7 +64,9 @@ export class SubscriptionsService {
 
     if (!this.configService.get<string>('STRIPE_SECRET_KEY')) {
       this.logger.warn('STRIPE_SECRET_KEY not found. Returning mock checkout URL.');
-      return { url: `${this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000')}/dashboard?checkout=success` };
+      return {
+        url: `${this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000')}/dashboard?checkout=success`,
+      };
     }
 
     try {
@@ -72,19 +74,11 @@ export class SubscriptionsService {
         payment_method_types: ['card'],
         mode: 'subscription',
         customer_email: user.email,
-        line_items: [
-          {
-            price: priceId, // This should be the Stripe Price ID
-            quantity: 1,
-          },
-        ],
+        line_items: [{ price: priceId, quantity: 1 }],
         success_url: `${this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000')}/dashboard?checkout=success`,
         cancel_url: `${this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000')}/dashboard/billing?checkout=cancel`,
-        metadata: {
-          userId: user.id,
-        },
+        metadata: { userId: user.id },
       });
-
       return { url: session.url };
     } catch (error) {
       this.logger.error('Failed to create checkout session', error);
@@ -99,8 +93,7 @@ export class SubscriptionsService {
       return;
     }
 
-    let event: Stripe.Event;
-
+    let event: any;
     try {
       event = this.stripe.webhooks.constructEvent(payload, signature, webhookSecret);
     } catch (err) {
@@ -110,27 +103,23 @@ export class SubscriptionsService {
 
     switch (event.type) {
       case 'checkout.session.completed':
-        const session = event.data.object as Stripe.Checkout.Session;
-        await this.handleSubscriptionCreated(session);
+        await this.handleSubscriptionCreated(event.data.object);
         break;
       case 'customer.subscription.deleted':
-        const subscription = event.data.object as Stripe.Subscription;
-        await this.handleSubscriptionDeleted(subscription);
+        await this.handleSubscriptionDeleted(event.data.object);
         break;
       default:
         this.logger.log(`Unhandled event type: ${event.type}`);
     }
   }
 
-  private async handleSubscriptionCreated(session: Stripe.Checkout.Session) {
+  private async handleSubscriptionCreated(session: any) {
     const userId = session.metadata?.userId;
     if (!userId) return;
 
     await this.prisma.user.update({
       where: { id: userId },
-      data: {
-        plan: 'MONTHLY', // Simplified mapping
-      },
+      data: { plan: 'MONTHLY' },
     });
 
     const currentPeriodEnd = new Date();
@@ -141,7 +130,7 @@ export class SubscriptionsService {
       create: {
         userId,
         stripeCustomerId: session.customer as string,
-        stripePriceId: 'monthly_plan', 
+        stripePriceId: 'monthly_plan',
         plan: 'MONTHLY',
         status: 'ACTIVE',
         currentPeriodEnd,
@@ -155,11 +144,9 @@ export class SubscriptionsService {
     });
   }
 
-  private async handleSubscriptionDeleted(subscription: Stripe.Subscription) {
+  private async handleSubscriptionDeleted(subscription: any) {
     const stripeCustomerId = subscription.customer as string;
-    const sub = await this.prisma.subscription.findFirst({
-      where: { stripeCustomerId },
-    });
+    const sub = await this.prisma.subscription.findFirst({ where: { stripeCustomerId } });
 
     if (sub) {
       await this.prisma.user.update({

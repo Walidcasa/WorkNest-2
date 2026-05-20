@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -130,6 +130,7 @@ model Employee {
   position      String
   salary        Float
   workSchedule  String?
+  avatar        String?
   paymentStatus PayStatus @default(PENDING)
   createdAt     DateTime  @default(now())
 }
@@ -141,17 +142,18 @@ enum PayStatus {
 }
 
 model Client {
-  id             String   @id @default(cuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id])
-  name           String
-  phone          String?
-  email          String?
-  totalPaid      Float    @default(0)
-  remainingBalance Float  @default(0)
-  notes          String?
-  createdAt      DateTime @default(now())
-  projects       Project[]
+  id               String    @id @default(cuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id])
+  name             String
+  phone            String?
+  email            String?
+  status           String    @default("Active")
+  totalPaid        Float     @default(0)
+  remainingBalance Float     @default(0)
+  notes            String?
+  createdAt        DateTime  @default(now())
+  projects         Project[]
 }
 
 model Project {
