@@ -16,7 +16,20 @@ export declare class AdminService {
         createdAt: Date;
         name: string;
         email: string;
+        emailVerified: boolean;
         role: import(".prisma/client").$Enums.Role;
         plan: import(".prisma/client").$Enums.Plan;
     }[]>;
+    updateUser(targetId: string, data: {
+        role?: string;
+        plan?: string;
+        suspended?: boolean;
+    }): Promise<{
+        id: string;
+        name: string;
+        email: string;
+        emailVerified: boolean;
+        role: import(".prisma/client").$Enums.Role;
+        plan: import(".prisma/client").$Enums.Plan;
+    }>;
 }
