@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
-import Stripe from 'stripe';
+import * as StripeLib from 'stripe';
 
 @Injectable()
 export class SubscriptionsService {
@@ -13,7 +13,8 @@ export class SubscriptionsService {
     private configService: ConfigService,
   ) {
     const key = this.configService.get<string>('STRIPE_SECRET_KEY') || 'sk_test_mock';
-    this.stripe = new (Stripe as any)(key, { apiVersion: '2023-10-16' });
+    const StripeConstructor = (StripeLib as any).default || StripeLib;
+    this.stripe = new StripeConstructor(key, { apiVersion: '2023-10-16' });
   }
 
   async getPlans() {
