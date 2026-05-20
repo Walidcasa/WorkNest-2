@@ -19,19 +19,19 @@
 }
 
 .dark {
-  --foreground-rgb: 229, 231, 235;
-  --background-start-rgb: 17, 24, 39;
-  --background-end-rgb: 31, 41, 55;
+  --foreground-rgb: 241, 245, 249;
+  --background-start-rgb: 10, 15, 30;
+  --background-end-rgb: 15, 23, 42;
 
-  --color-primary: 31 41 55;         /* Gray 800 */
-  --color-secondary: 17 24 39;       /* Gray 900 */
-  --color-accent1: 96 165 250;       /* Keep bright for contrast */
+  --color-primary: 30 41 59;         /* Slate 800 */
+  --color-secondary: 15 23 42;       /* Slate 900 */
+  --color-accent1: 96 165 250;
   --color-accent2: 129 140 248;
   --color-accent3: 103 232 249;
   --color-success: 74 222 128;
   --color-warning: 253 186 116;
   --color-danger: 252 165 165;
-  --color-text: 229 231 235;         /* Gray 200 */
+  --color-text: 241 245 249;         /* Slate 100 */
 }
 
 body {
@@ -49,7 +49,7 @@ body {
   .glass-card {
     @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg rounded-2xl;
   }
-  
+
   .btn-primary {
     @apply bg-accent2 text-white px-6 py-2 rounded-xl font-medium transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98];
   }
@@ -57,4 +57,55 @@ body {
   .nav-link {
     @apply text-text/70 hover:text-accent2 transition-colors font-medium;
   }
+}
+
+/* Dark mode: convert all white cards/surfaces to dark slate */
+.dark .glass-card {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(100, 116, 139, 0.2);
+}
+
+.dark .bg-white {
+  background-color: rgb(30, 41, 59) !important;
+}
+
+.dark .bg-white\/70 {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+.dark .bg-white\/80 {
+  background-color: rgba(15, 23, 42, 0.85) !important;
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200 {
+  border-color: rgba(100, 116, 139, 0.25) !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: rgb(15, 23, 42) !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: rgb(30, 41, 59) !important;
+}
+
+.dark .text-gray-900 {
+  color: rgb(241, 245, 249) !important;
+}
+
+.dark .text-gray-700 {
+  color: rgb(203, 213, 225) !important;
+}
+
+.dark .text-gray-400 {
+  color: rgb(100, 116, 139) !important;
+}
+
+.dark .divide-gray-50 > * + * {
+  border-color: rgba(100, 116, 139, 0.15) !important;
+}
+
+.dark thead.bg-gray-50 {
+  background-color: rgb(15, 23, 42) !important;
 }

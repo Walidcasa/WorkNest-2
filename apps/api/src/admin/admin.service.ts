@@ -38,9 +38,22 @@ export class AdminService {
         name: true,
         role: true,
         plan: true,
+        emailVerified: true,
         createdAt: true,
       },
       orderBy: { createdAt: 'desc' }
+    });
+  }
+
+  async updateUser(targetId: string, data: { role?: string; plan?: string; suspended?: boolean }) {
+    const updateData: any = {};
+    if (data.role) updateData.role = data.role;
+    if (data.plan) updateData.plan = data.plan;
+    if (data.suspended !== undefined) updateData.emailVerified = !data.suspended;
+    return this.prisma.user.update({
+      where: { id: targetId },
+      data: updateData,
+      select: { id: true, email: true, name: true, role: true, plan: true, emailVerified: true },
     });
   }
 }

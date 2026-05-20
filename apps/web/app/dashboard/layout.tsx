@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/dashboard/sidebar'
-import { Bell, Search, User, Menu, X, HelpCircle } from 'lucide-react'
+import { Bell, Search, Menu, X, HelpCircle } from 'lucide-react'
 import { useTranslation } from '@/components/providers/i18n-provider'
 import { SupportModal } from '@/components/dashboard/support-modal'
 
@@ -15,12 +15,23 @@ export default function DashboardLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isSupportOpen, setIsSupportOpen] = useState(false)
   const [userName, setUserName] = useState('')
+  const [userAvatar, setUserAvatar] = useState('')
 
   useEffect(() => {
     const stored = localStorage.getItem('worknest_user')
     if (stored) {
-      try { setUserName(JSON.parse(stored).name || '') } catch {}
+      try {
+        const u = JSON.parse(stored)
+        setUserName(u.name || '')
+        setUserAvatar(u.avatar || '')
+      } catch {}
     }
+    const onAvatarChange = () => {
+      const s = localStorage.getItem('worknest_user')
+      if (s) { try { setUserAvatar(JSON.parse(s).avatar || '') } catch {} }
+    }
+    window.addEventListener('worknest_avatar_changed', onAvatarChange)
+    return () => window.removeEventListener('worknest_avatar_changed', onAvatarChange)
   }, [])
 
   return (
@@ -81,8 +92,12 @@ export default function DashboardLayout({
               </button>
               <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-text/10" aria-hidden="true" />
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-accent1/20 flex items-center justify-center">
-                  <User className="h-5 w-5 text-accent1" />
+                <div className="h-9 w-9 rounded-full bg-accent2/20 flex items-center justify-center text-lg font-black select-none overflow-hidden">
+                  {userAvatar ? (
+                    <span>{userAvatar}</span>
+                  ) : (
+                    <span className="text-accent2 text-sm">{userName ? userName.charAt(0).toUpperCase() : '?'}</span>
+                  )}
                 </div>
                 <span className="text-sm font-semibold text-text hidden sm:inline">{userName}</span>
               </div>
