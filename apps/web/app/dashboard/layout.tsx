@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/dashboard/sidebar'
 import { Bell, Search, User, Menu, X, HelpCircle } from 'lucide-react'
 import { useTranslation } from '@/components/providers/i18n-provider'
@@ -14,6 +14,14 @@ export default function DashboardLayout({
   const { t } = useTranslation()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isSupportOpen, setIsSupportOpen] = useState(false)
+  const [userName, setUserName] = useState('')
+
+  useEffect(() => {
+    const stored = localStorage.getItem('worknest_user')
+    if (stored) {
+      try { setUserName(JSON.parse(stored).name || '') } catch {}
+    }
+  }, [])
 
   return (
     <div className="flex min-h-screen bg-secondary/30">
@@ -76,7 +84,7 @@ export default function DashboardLayout({
                 <div className="h-8 w-8 rounded-full bg-accent1/20 flex items-center justify-center">
                   <User className="h-5 w-5 text-accent1" />
                 </div>
-                <span className="text-sm font-semibold text-text hidden sm:inline">John Doe</span>
+                <span className="text-sm font-semibold text-text hidden sm:inline">{userName}</span>
               </div>
             </div>
           </div>
