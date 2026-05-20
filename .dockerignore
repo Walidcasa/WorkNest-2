@@ -1,0 +1,9 @@
+node_modules
+.next
+apps/web/node_modules
+apps/web/.next
+apps/api/node_modules
+apps/api/dist
+.env
+*.log
+.git
