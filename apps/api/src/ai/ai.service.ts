@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
-import OpenAI from 'openai';
+import * as OpenAILib from 'openai';
 
 @Injectable()
 export class AiService {
-  private openai: OpenAI;
+  private openai: any;
 
   constructor(
     private prisma: PrismaService,
     private configService: ConfigService,
   ) {
-    this.openai = new OpenAI({
-      apiKey: this.configService.get<string>('OPENAI_API_KEY'),
+    const OpenAIConstructor = (OpenAILib as any).default || OpenAILib;
+    this.openai = new OpenAIConstructor({
+      apiKey: this.configService.get<string>('OPENAI_API_KEY') || 'sk-mock',
     });
   }
 

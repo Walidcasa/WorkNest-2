@@ -9,7 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
-const prisma_module_1 = require("./prisma/prisma.module");
 const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./users/users.module");
 const finances_module_1 = require("./finances/finances.module");
@@ -17,9 +16,12 @@ const products_module_1 = require("./products/products.module");
 const employees_module_1 = require("./employees/employees.module");
 const clients_module_1 = require("./clients/clients.module");
 const projects_module_1 = require("./projects/projects.module");
+const ai_module_1 = require("./ai/ai.module");
+const subscriptions_module_1 = require("./subscriptions/subscriptions.module");
 const notifications_module_1 = require("./notifications/notifications.module");
 const transactions_module_1 = require("./transactions/transactions.module");
 const activities_module_1 = require("./activities/activities.module");
+const prisma_module_1 = require("./prisma/prisma.module");
 const admin_module_1 = require("./admin/admin.module");
 let AppModule = class AppModule {
 };
@@ -36,6 +38,8 @@ exports.AppModule = AppModule = __decorate([
             employees_module_1.EmployeesModule,
             clients_module_1.ClientsModule,
             projects_module_1.ProjectsModule,
+            ai_module_1.AiModule,
+            subscriptions_module_1.SubscriptionsModule,
             notifications_module_1.NotificationsModule,
             transactions_module_1.TransactionsModule,
             activities_module_1.ActivitiesModule,

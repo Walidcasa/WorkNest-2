@@ -13,13 +13,14 @@ exports.AiService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const prisma_service_1 = require("../prisma/prisma.service");
-const openai_1 = require("openai");
+const OpenAILib = require("openai");
 let AiService = class AiService {
     constructor(prisma, configService) {
         this.prisma = prisma;
         this.configService = configService;
-        this.openai = new openai_1.default({
-            apiKey: this.configService.get('OPENAI_API_KEY'),
+        const OpenAIConstructor = OpenAILib.default || OpenAILib;
+        this.openai = new OpenAIConstructor({
+            apiKey: this.configService.get('OPENAI_API_KEY') || 'sk-mock',
         });
     }
     async generateInsight(userId) {
