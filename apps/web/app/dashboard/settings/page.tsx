@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { User, Bell, Shield, Palette, Globe, Save, Loader2, Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useTranslation } from '@/components/providers/i18n-provider'
+import { apiRequest } from '@/lib/api-client'
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
@@ -11,10 +12,10 @@ export default function SettingsPage() {
   const [mounted, setMounted] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
-  
+
   const [form, setForm] = useState({
-    name: 'John Doe',
-    email: 'john@clarity.com',
+    name: '',
+    email: '',
     currency: 'USD',
     notifications: true,
     weeklyReport: true,
@@ -23,14 +24,39 @@ export default function SettingsPage() {
 
   useEffect(() => {
     setMounted(true)
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('worknest_user') : null
+    if (stored) {
+      try {
+        const user = JSON.parse(stored)
+        setForm(f => ({ ...f, name: user.name || '', email: user.email || '', currency: user.currency || 'USD' }))
+      } catch {}
+    }
+    apiRequest('/users/me').then((user: any) => {
+      setForm(f => ({ ...f, name: user.name || '', email: user.email || '', currency: user.currency || 'USD' }))
+      if (typeof window !== 'undefined') {
+        const stored2 = localStorage.getItem('worknest_user')
+        const existing = stored2 ? JSON.parse(stored2) : {}
+        localStorage.setItem('worknest_user', JSON.stringify({ ...existing, ...user }))
+      }
+    }).catch(() => {})
   }, [])
 
   const handleSave = async () => {
     setSaving(true)
-    await new Promise(r => setTimeout(r, 1000))
+    try {
+      const updated = await apiRequest('/users/profile', {
+        method: 'PATCH',
+        body: JSON.stringify({ name: form.name, currency: form.currency }),
+      })
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('worknest_user')
+        const existing = stored ? JSON.parse(stored) : {}
+        localStorage.setItem('worknest_user', JSON.stringify({ ...existing, ...updated }))
+      }
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } catch {}
     setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
   }
 
   if (!mounted) return null
