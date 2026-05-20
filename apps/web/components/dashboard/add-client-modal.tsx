@@ -104,7 +104,7 @@ export function AddClientModal({ isOpen, onClose, onSuccess }: AddClientModalPro
               className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20 font-bold"
             >
               <option value="Active">{t('active')}</option>
-              <option value="New">{t('new') || 'New'}</option>
+              <option value="New">New</option>
               <option value="Inactive">{t('inactive')}</option>
             </select>
           </div>

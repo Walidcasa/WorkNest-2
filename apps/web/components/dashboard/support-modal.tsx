@@ -92,7 +92,7 @@ export function SupportModal({ isOpen, onClose }: SupportModalProps) {
                         : 'bg-secondary/30 text-text/40 border-text/5 hover:border-text/20'
                     }`}
                   >
-                    {t(s.toLowerCase())}
+                    {s}
                   </button>
                 ))}
               </div>

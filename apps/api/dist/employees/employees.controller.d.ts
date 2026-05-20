@@ -1,19 +1,8 @@
-import { PrismaService } from '../prisma/prisma.service';
-export declare class EmployeesService {
-    private prisma;
-    constructor(prisma: PrismaService);
-    create(userId: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
-        name: string;
-        position: string;
-        salary: number;
-        workSchedule: string | null;
-        avatar: string | null;
-        paymentStatus: import(".prisma/client").$Enums.PayStatus;
-    }>;
-    findAll(userId: string): Promise<{
+import { EmployeesService } from './employees.service';
+export declare class EmployeesController {
+    private readonly employeesService;
+    constructor(employeesService: EmployeesService);
+    findAll(req: any): Promise<{
         id: string;
         userId: string;
         createdAt: Date;
@@ -24,42 +13,42 @@ export declare class EmployeesService {
         avatar: string | null;
         paymentStatus: import(".prisma/client").$Enums.PayStatus;
     }[]>;
-    findOne(id: string, userId: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
-        name: string;
-        position: string;
-        salary: number;
-        workSchedule: string | null;
-        avatar: string | null;
-        paymentStatus: import(".prisma/client").$Enums.PayStatus;
-    }>;
-    update(id: string, userId: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
-        name: string;
-        position: string;
-        salary: number;
-        workSchedule: string | null;
-        avatar: string | null;
-        paymentStatus: import(".prisma/client").$Enums.PayStatus;
-    }>;
-    remove(id: string, userId: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
-        name: string;
-        position: string;
-        salary: number;
-        workSchedule: string | null;
-        avatar: string | null;
-        paymentStatus: import(".prisma/client").$Enums.PayStatus;
-    }>;
-    getPayrollSummary(userId: string): Promise<{
+    getPayroll(req: any): Promise<{
         totalMonthly: number;
         pendingPayments: number;
         employeeCount: number;
+    }>;
+    create(req: any, data: any): Promise<{
+        id: string;
+        userId: string;
+        createdAt: Date;
+        name: string;
+        position: string;
+        salary: number;
+        workSchedule: string | null;
+        avatar: string | null;
+        paymentStatus: import(".prisma/client").$Enums.PayStatus;
+    }>;
+    update(req: any, id: string, data: any): Promise<{
+        id: string;
+        userId: string;
+        createdAt: Date;
+        name: string;
+        position: string;
+        salary: number;
+        workSchedule: string | null;
+        avatar: string | null;
+        paymentStatus: import(".prisma/client").$Enums.PayStatus;
+    }>;
+    remove(req: any, id: string): Promise<{
+        id: string;
+        userId: string;
+        createdAt: Date;
+        name: string;
+        position: string;
+        salary: number;
+        workSchedule: string | null;
+        avatar: string | null;
+        paymentStatus: import(".prisma/client").$Enums.PayStatus;
     }>;
 }

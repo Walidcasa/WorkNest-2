@@ -6,23 +6,23 @@ export declare class FinancesController {
     constructor(financesService: FinancesService);
     create(req: any, createFinanceDto: CreateFinanceDto): Promise<{
         id: string;
-        createdAt: Date;
         userId: string;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        description: string | null;
         date: Date;
+        createdAt: Date;
+        description: string | null;
     }>;
     findAll(req: any): Promise<{
         id: string;
-        createdAt: Date;
         userId: string;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        description: string | null;
         date: Date;
+        createdAt: Date;
+        description: string | null;
     }[]>;
     getSummary(req: any): Promise<{
         totalRevenue: number;
@@ -31,32 +31,32 @@ export declare class FinancesController {
     }>;
     findOne(req: any, id: string): Promise<{
         id: string;
-        createdAt: Date;
         userId: string;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        description: string | null;
         date: Date;
+        createdAt: Date;
+        description: string | null;
     }>;
     update(req: any, id: string, updateFinanceDto: UpdateFinanceDto): Promise<{
         id: string;
-        createdAt: Date;
         userId: string;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        description: string | null;
         date: Date;
+        createdAt: Date;
+        description: string | null;
     }>;
     remove(req: any, id: string): Promise<{
         id: string;
-        createdAt: Date;
         userId: string;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        description: string | null;
         date: Date;
+        createdAt: Date;
+        description: string | null;
     }>;
 }

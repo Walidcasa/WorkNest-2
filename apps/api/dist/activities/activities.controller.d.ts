@@ -5,11 +5,11 @@ export declare class ActivitiesController {
     log(req: any, data: any): Promise<{
         level: import(".prisma/client").$Enums.ProductivityLevel;
         id: string;
-        name: string;
-        createdAt: Date;
         userId: string;
         category: string;
         date: Date;
+        createdAt: Date;
+        name: string;
         duration: number;
         startTime: Date | null;
         endTime: Date | null;
@@ -17,11 +17,11 @@ export declare class ActivitiesController {
     findToday(req: any): Promise<{
         level: import(".prisma/client").$Enums.ProductivityLevel;
         id: string;
-        name: string;
-        createdAt: Date;
         userId: string;
         category: string;
         date: Date;
+        createdAt: Date;
+        name: string;
         duration: number;
         startTime: Date | null;
         endTime: Date | null;

@@ -49,7 +49,7 @@ export default function UnifiedDashboard() {
           user: storedUser ? JSON.parse(storedUser) : null
         })
       } else {
-        setData(prev => ({
+        setData((prev: any) => ({
           ...prev,
           user: storedUser ? JSON.parse(storedUser) : null
         }))

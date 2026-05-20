@@ -85,6 +85,8 @@ export default function GoalsPage() {
             </div>
           </div>
         ))}
+      </div>
+
       <AddProjectModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 

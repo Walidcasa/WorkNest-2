@@ -4,9 +4,10 @@ export declare class UsersService {
     constructor(prisma: PrismaService);
     updateProfile(userId: string, data: any): Promise<{
         id: string;
+        createdAt: Date;
+        name: string;
         email: string;
         passwordHash: string;
-        name: string;
         phoneNumber: string | null;
         emailVerified: boolean;
         verifyToken: string | null;
@@ -20,13 +21,12 @@ export declare class UsersService {
         theme: string;
         plan: import(".prisma/client").$Enums.Plan;
         trialEndsAt: Date | null;
-        createdAt: Date;
         updatedAt: Date;
     }>;
     findOne(userId: string): Promise<{
         id: string;
-        email: string;
         name: string;
+        email: string;
         phoneNumber: string;
         accountType: import(".prisma/client").$Enums.AccountType;
         plan: import(".prisma/client").$Enums.Plan;

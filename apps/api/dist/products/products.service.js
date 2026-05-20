@@ -17,7 +17,29 @@ let ProductsService = class ProductsService {
         this.prisma = prisma;
     }
     async findAll(userId) {
-        return this.prisma.product.findMany({ where: { userId } });
+        return this.prisma.product.findMany({
+            where: { userId },
+            orderBy: { createdAt: 'desc' },
+        });
+    }
+    async create(userId, data) {
+        return this.prisma.product.create({
+            data: { ...data, userId },
+        });
+    }
+    async findOne(id, userId) {
+        const product = await this.prisma.product.findFirst({ where: { id, userId } });
+        if (!product)
+            throw new common_1.NotFoundException('Product not found');
+        return product;
+    }
+    async update(id, userId, data) {
+        await this.findOne(id, userId);
+        return this.prisma.product.update({ where: { id }, data });
+    }
+    async remove(id, userId) {
+        await this.findOne(id, userId);
+        return this.prisma.product.delete({ where: { id } });
     }
 };
 exports.ProductsService = ProductsService;

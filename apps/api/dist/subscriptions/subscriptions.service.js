@@ -14,13 +14,15 @@ exports.SubscriptionsService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const prisma_service_1 = require("../prisma/prisma.service");
-const stripe_1 = require("stripe");
+const StripeLib = require("stripe");
 let SubscriptionsService = SubscriptionsService_1 = class SubscriptionsService {
     constructor(prisma, configService) {
         this.prisma = prisma;
         this.configService = configService;
         this.logger = new common_1.Logger(SubscriptionsService_1.name);
-        this.stripe = new stripe_1.default(this.configService.get('STRIPE_SECRET_KEY') || 'sk_test_mock', { apiVersion: '2023-10-16' });
+        const key = this.configService.get('STRIPE_SECRET_KEY') || 'sk_test_mock';
+        const StripeConstructor = StripeLib.default || StripeLib;
+        this.stripe = new StripeConstructor(key, { apiVersion: '2023-10-16' });
     }
     async getPlans() {
         return [
@@ -55,7 +57,9 @@ let SubscriptionsService = SubscriptionsService_1 = class SubscriptionsService {
             plan: user.plan,
             trialEndsAt: user.trialEndsAt,
             isTrialActive,
-            daysLeft: user.trialEndsAt ? Math.ceil((user.trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : 0,
+            daysLeft: user.trialEndsAt
+                ? Math.ceil((user.trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+                : 0,
         };
     }
     async createCheckoutSession(userId, priceId) {
@@ -64,24 +68,19 @@ let SubscriptionsService = SubscriptionsService_1 = class SubscriptionsService {
             throw new common_1.NotFoundException('User not found');
         if (!this.configService.get('STRIPE_SECRET_KEY')) {
             this.logger.warn('STRIPE_SECRET_KEY not found. Returning mock checkout URL.');
-            return { url: `${this.configService.get('FRONTEND_URL', 'http://localhost:3000')}/dashboard?checkout=success` };
+            return {
+                url: `${this.configService.get('FRONTEND_URL', 'http://localhost:3000')}/dashboard?checkout=success`,
+            };
         }
         try {
             const session = await this.stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 mode: 'subscription',
                 customer_email: user.email,
-                line_items: [
-                    {
-                        price: priceId,
-                        quantity: 1,
-                    },
-                ],
+                line_items: [{ price: priceId, quantity: 1 }],
                 success_url: `${this.configService.get('FRONTEND_URL', 'http://localhost:3000')}/dashboard?checkout=success`,
                 cancel_url: `${this.configService.get('FRONTEND_URL', 'http://localhost:3000')}/dashboard/billing?checkout=cancel`,
-                metadata: {
-                    userId: user.id,
-                },
+                metadata: { userId: user.id },
             });
             return { url: session.url };
         }
@@ -106,12 +105,10 @@ let SubscriptionsService = SubscriptionsService_1 = class SubscriptionsService {
         }
         switch (event.type) {
             case 'checkout.session.completed':
-                const session = event.data.object;
-                await this.handleSubscriptionCreated(session);
+                await this.handleSubscriptionCreated(event.data.object);
                 break;
             case 'customer.subscription.deleted':
-                const subscription = event.data.object;
-                await this.handleSubscriptionDeleted(subscription);
+                await this.handleSubscriptionDeleted(event.data.object);
                 break;
             default:
                 this.logger.log(`Unhandled event type: ${event.type}`);
@@ -123,9 +120,7 @@ let SubscriptionsService = SubscriptionsService_1 = class SubscriptionsService {
             return;
         await this.prisma.user.update({
             where: { id: userId },
-            data: {
-                plan: 'MONTHLY',
-            },
+            data: { plan: 'MONTHLY' },
         });
         const currentPeriodEnd = new Date();
         currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
@@ -149,9 +144,7 @@ let SubscriptionsService = SubscriptionsService_1 = class SubscriptionsService {
     }
     async handleSubscriptionDeleted(subscription) {
         const stripeCustomerId = subscription.customer;
-        const sub = await this.prisma.subscription.findFirst({
-            where: { stripeCustomerId },
-        });
+        const sub = await this.prisma.subscription.findFirst({ where: { stripeCustomerId } });
         if (sub) {
             await this.prisma.user.update({
                 where: { id: sub.userId },

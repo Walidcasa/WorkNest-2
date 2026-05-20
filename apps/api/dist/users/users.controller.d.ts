@@ -4,17 +4,18 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     getMe(req: any): Promise<{
         id: string;
-        email: string;
         name: string;
+        email: string;
         phoneNumber: string;
         accountType: import(".prisma/client").$Enums.AccountType;
         plan: import(".prisma/client").$Enums.Plan;
     }>;
     updateProfile(req: any, data: any): Promise<{
         id: string;
+        createdAt: Date;
+        name: string;
         email: string;
         passwordHash: string;
-        name: string;
         phoneNumber: string | null;
         emailVerified: boolean;
         verifyToken: string | null;
@@ -28,7 +29,6 @@ export declare class UsersController {
         theme: string;
         plan: import(".prisma/client").$Enums.Plan;
         trialEndsAt: Date | null;
-        createdAt: Date;
         updatedAt: Date;
     }>;
 }

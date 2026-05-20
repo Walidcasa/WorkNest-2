@@ -1,8 +1,8 @@
-import { PrismaService } from '../prisma/prisma.service';
-export declare class ProductsService {
-    private prisma;
-    constructor(prisma: PrismaService);
-    findAll(userId: string): Promise<{
+import { ProductsService } from './products.service';
+export declare class ProductsController {
+    private readonly productsService;
+    constructor(productsService: ProductsService);
+    findAll(req: any): Promise<{
         id: string;
         userId: string;
         createdAt: Date;
@@ -15,7 +15,7 @@ export declare class ProductsService {
         purchaseDate: Date | null;
         lowStockAt: number;
     }[]>;
-    create(userId: string, data: any): Promise<{
+    create(req: any, data: any): Promise<{
         id: string;
         userId: string;
         createdAt: Date;
@@ -28,7 +28,7 @@ export declare class ProductsService {
         purchaseDate: Date | null;
         lowStockAt: number;
     }>;
-    findOne(id: string, userId: string): Promise<{
+    update(req: any, id: string, data: any): Promise<{
         id: string;
         userId: string;
         createdAt: Date;
@@ -41,20 +41,7 @@ export declare class ProductsService {
         purchaseDate: Date | null;
         lowStockAt: number;
     }>;
-    update(id: string, userId: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
-        name: string;
-        purchasePrice: number;
-        sellingPrice: number;
-        stock: number;
-        sold: number;
-        supplier: string | null;
-        purchaseDate: Date | null;
-        lowStockAt: number;
-    }>;
-    remove(id: string, userId: string): Promise<{
+    remove(req: any, id: string): Promise<{
         id: string;
         userId: string;
         createdAt: Date;

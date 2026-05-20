@@ -10,8 +10,8 @@ exports.PrismaService = void 0;
 const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 let PrismaService = class PrismaService extends client_1.PrismaClient {
-    async onModuleInit() {
-        await this.$connect();
+    onModuleInit() {
+        this.$connect().catch(e => console.error('DB connect warning:', e.message));
     }
     async onModuleDestroy() {
         await this.$disconnect();

@@ -8,6 +8,9 @@ async function bootstrap() {
     app.setGlobalPrefix('v1');
     app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, transform: true }));
     app.enableCors();
+    const httpAdapter = app.getHttpAdapter();
+    httpAdapter.get('/health', (_req, res) => res.send('OK'));
+    httpAdapter.get('/', (_req, res) => res.send('WorkNest API'));
     await app.listen(process.env.PORT || 4000, '0.0.0.0');
     console.log(`Application is running on: ${await app.getUrl()}`);
 }

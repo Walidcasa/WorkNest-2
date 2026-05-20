@@ -23,21 +23,22 @@ export default function CashFlowPage() {
   const [transactions, setTransactions] = useState<any[]>([])
   const [summary, setSummary] = useState({ totalIncome: 0, totalExpenses: 0, netCashFlow: 0 })
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [trans, summ] = await Promise.all([
-          apiRequest('/transactions'),
-          apiRequest('/transactions/summary')
-        ])
-        setTransactions(trans)
-        setSummary(summ)
-      } catch (err) {
-        console.error('Failed to fetch cash flow data', err)
-      } finally {
-        setLoading(false)
-      }
+  const fetchData = async () => {
+    try {
+      const [trans, summ] = await Promise.all([
+        apiRequest('/transactions'),
+        apiRequest('/transactions/summary')
+      ])
+      setTransactions(trans)
+      setSummary(summ)
+    } catch (err) {
+      console.error('Failed to fetch cash flow data', err)
+    } finally {
+      setLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchData()
   }, [])
 

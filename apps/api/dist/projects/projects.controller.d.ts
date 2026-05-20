@@ -1,21 +1,8 @@
-import { PrismaService } from '../prisma/prisma.service';
-export declare class ProjectsService {
-    private prisma;
-    constructor(prisma: PrismaService);
-    create(userId: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
-        status: import(".prisma/client").$Enums.ProjectStatus;
-        clientId: string | null;
-        title: string;
-        description: string | null;
-        startDate: Date | null;
-        endDate: Date | null;
-        deadline: Date | null;
-        progress: number;
-    }>;
-    findAll(userId: string): Promise<({
+import { ProjectsService } from './projects.service';
+export declare class ProjectsController {
+    private readonly projectsService;
+    constructor(projectsService: ProjectsService);
+    findAll(req: any): Promise<({
         client: {
             id: string;
             userId: string;
@@ -41,20 +28,7 @@ export declare class ProjectsService {
         deadline: Date | null;
         progress: number;
     })[]>;
-    findOne(id: string, userId: string): Promise<{
-        client: {
-            id: string;
-            userId: string;
-            createdAt: Date;
-            name: string;
-            email: string | null;
-            phone: string | null;
-            status: string;
-            totalPaid: number;
-            remainingBalance: number;
-            notes: string | null;
-        };
-    } & {
+    create(req: any, data: any): Promise<{
         id: string;
         userId: string;
         createdAt: Date;
@@ -67,7 +41,7 @@ export declare class ProjectsService {
         deadline: Date | null;
         progress: number;
     }>;
-    update(id: string, userId: string, data: any): Promise<{
+    update(req: any, id: string, data: any): Promise<{
         id: string;
         userId: string;
         createdAt: Date;
@@ -80,7 +54,7 @@ export declare class ProjectsService {
         deadline: Date | null;
         progress: number;
     }>;
-    remove(id: string, userId: string): Promise<{
+    remove(req: any, id: string): Promise<{
         id: string;
         userId: string;
         createdAt: Date;
