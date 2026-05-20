@@ -19,5 +19,9 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "npm@10.9.2"
+  "packageManager": "npm@10.9.2",
+  "dependencies": {
+    "@nestjs/config": "^3.3.0",
+    "@prisma/client": "^6.19.3"
+  }
 }
