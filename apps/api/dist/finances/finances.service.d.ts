@@ -6,53 +6,53 @@ export declare class FinancesService {
     constructor(prisma: PrismaService);
     create(userId: string, createFinanceDto: CreateFinanceDto): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        date: Date;
-        createdAt: Date;
         description: string | null;
+        date: Date;
+        userId: string;
     }>;
     findAll(userId: string): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        date: Date;
-        createdAt: Date;
         description: string | null;
+        date: Date;
+        userId: string;
     }[]>;
     findOne(id: string, userId: string): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        date: Date;
-        createdAt: Date;
         description: string | null;
+        date: Date;
+        userId: string;
     }>;
     update(id: string, userId: string, updateFinanceDto: UpdateFinanceDto): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        date: Date;
-        createdAt: Date;
         description: string | null;
+        date: Date;
+        userId: string;
     }>;
     remove(id: string, userId: string): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        date: Date;
-        createdAt: Date;
         description: string | null;
+        date: Date;
+        userId: string;
     }>;
     getSummary(userId: string): Promise<{
         totalRevenue: number;

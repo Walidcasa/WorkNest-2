@@ -3,10 +3,10 @@ export declare class ProductsService {
     private prisma;
     constructor(prisma: PrismaService);
     findAll(userId: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         purchasePrice: number;
         sellingPrice: number;
         stock: number;
@@ -16,10 +16,10 @@ export declare class ProductsService {
         lowStockAt: number;
     }[]>;
     create(userId: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         purchasePrice: number;
         sellingPrice: number;
         stock: number;
@@ -29,10 +29,10 @@ export declare class ProductsService {
         lowStockAt: number;
     }>;
     findOne(id: string, userId: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         purchasePrice: number;
         sellingPrice: number;
         stock: number;
@@ -42,10 +42,10 @@ export declare class ProductsService {
         lowStockAt: number;
     }>;
     update(id: string, userId: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         purchasePrice: number;
         sellingPrice: number;
         stock: number;
@@ -55,10 +55,10 @@ export declare class ProductsService {
         lowStockAt: number;
     }>;
     remove(id: string, userId: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         purchasePrice: number;
         sellingPrice: number;
         stock: number;

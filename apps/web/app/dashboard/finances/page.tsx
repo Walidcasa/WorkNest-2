@@ -6,6 +6,7 @@ import { dashboardApi } from '@/lib/api-client'
 import { AddTransactionModal } from '@/components/dashboard/add-transaction-modal'
 import { formatCurrency } from '@/lib/currency'
 import { useTranslation } from '@/components/providers/i18n-provider'
+import { exportToPDF } from '@/lib/pdf-export'
 
 export default function FinancesPage() {
   const { t } = useTranslation()
@@ -41,14 +42,14 @@ export default function FinancesPage() {
     </div>
   )
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" id="finances-content">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold font-outfit text-text">{t('finances')}</h1>
           <p className="text-text/60">{t('manageFinance')}</p>
         </div>
         <div className="flex gap-2">
-          <button className="flex items-center gap-2 bg-white text-text border border-text/10 px-4 py-2 rounded-xl font-medium shadow-sm hover:bg-secondary transition-all">
+          <button onClick={() => exportToPDF('finances-content', 'Finances Report')} className="flex items-center gap-2 bg-white text-text border border-text/10 px-4 py-2 rounded-xl font-medium shadow-sm hover:bg-secondary transition-all">
             <Download className="w-4 h-4" /> {t('export')}
           </button>
           <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 btn-primary px-4 py-2">

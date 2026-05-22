@@ -3,10 +3,10 @@ export declare class EmployeesController {
     private readonly employeesService;
     constructor(employeesService: EmployeesService);
     findAll(req: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         position: string;
         salary: number;
         workSchedule: string | null;
@@ -19,10 +19,10 @@ export declare class EmployeesController {
         employeeCount: number;
     }>;
     create(req: any, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         position: string;
         salary: number;
         workSchedule: string | null;
@@ -30,10 +30,10 @@ export declare class EmployeesController {
         paymentStatus: import(".prisma/client").$Enums.PayStatus;
     }>;
     update(req: any, id: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         position: string;
         salary: number;
         workSchedule: string | null;
@@ -41,10 +41,10 @@ export declare class EmployeesController {
         paymentStatus: import(".prisma/client").$Enums.PayStatus;
     }>;
     remove(req: any, id: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         position: string;
         salary: number;
         workSchedule: string | null;

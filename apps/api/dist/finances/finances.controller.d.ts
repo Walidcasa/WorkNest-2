@@ -6,23 +6,23 @@ export declare class FinancesController {
     constructor(financesService: FinancesService);
     create(req: any, createFinanceDto: CreateFinanceDto): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        date: Date;
-        createdAt: Date;
         description: string | null;
+        date: Date;
+        userId: string;
     }>;
     findAll(req: any): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        date: Date;
-        createdAt: Date;
         description: string | null;
+        date: Date;
+        userId: string;
     }[]>;
     getSummary(req: any): Promise<{
         totalRevenue: number;
@@ -31,32 +31,32 @@ export declare class FinancesController {
     }>;
     findOne(req: any, id: string): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        date: Date;
-        createdAt: Date;
         description: string | null;
+        date: Date;
+        userId: string;
     }>;
     update(req: any, id: string, updateFinanceDto: UpdateFinanceDto): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        date: Date;
-        createdAt: Date;
         description: string | null;
+        date: Date;
+        userId: string;
     }>;
     remove(req: any, id: string): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        date: Date;
-        createdAt: Date;
         description: string | null;
+        date: Date;
+        userId: string;
     }>;
 }

@@ -4,12 +4,12 @@ export declare class ProjectsService {
     constructor(prisma: PrismaService);
     create(userId: string, data: any): Promise<{
         id: string;
-        userId: string;
         createdAt: Date;
+        description: string | null;
+        userId: string;
         status: import(".prisma/client").$Enums.ProjectStatus;
         clientId: string | null;
         title: string;
-        description: string | null;
         startDate: Date | null;
         endDate: Date | null;
         deadline: Date | null;
@@ -17,11 +17,11 @@ export declare class ProjectsService {
     }>;
     findAll(userId: string): Promise<({
         client: {
-            id: string;
-            userId: string;
-            createdAt: Date;
-            name: string;
             email: string | null;
+            name: string;
+            id: string;
+            createdAt: Date;
+            userId: string;
             phone: string | null;
             status: string;
             totalPaid: number;
@@ -30,12 +30,12 @@ export declare class ProjectsService {
         };
     } & {
         id: string;
-        userId: string;
         createdAt: Date;
+        description: string | null;
+        userId: string;
         status: import(".prisma/client").$Enums.ProjectStatus;
         clientId: string | null;
         title: string;
-        description: string | null;
         startDate: Date | null;
         endDate: Date | null;
         deadline: Date | null;
@@ -43,11 +43,11 @@ export declare class ProjectsService {
     })[]>;
     findOne(id: string, userId: string): Promise<{
         client: {
-            id: string;
-            userId: string;
-            createdAt: Date;
-            name: string;
             email: string | null;
+            name: string;
+            id: string;
+            createdAt: Date;
+            userId: string;
             phone: string | null;
             status: string;
             totalPaid: number;
@@ -56,12 +56,12 @@ export declare class ProjectsService {
         };
     } & {
         id: string;
-        userId: string;
         createdAt: Date;
+        description: string | null;
+        userId: string;
         status: import(".prisma/client").$Enums.ProjectStatus;
         clientId: string | null;
         title: string;
-        description: string | null;
         startDate: Date | null;
         endDate: Date | null;
         deadline: Date | null;
@@ -69,12 +69,12 @@ export declare class ProjectsService {
     }>;
     update(id: string, userId: string, data: any): Promise<{
         id: string;
-        userId: string;
         createdAt: Date;
+        description: string | null;
+        userId: string;
         status: import(".prisma/client").$Enums.ProjectStatus;
         clientId: string | null;
         title: string;
-        description: string | null;
         startDate: Date | null;
         endDate: Date | null;
         deadline: Date | null;
@@ -82,12 +82,12 @@ export declare class ProjectsService {
     }>;
     remove(id: string, userId: string): Promise<{
         id: string;
-        userId: string;
         createdAt: Date;
+        description: string | null;
+        userId: string;
         status: import(".prisma/client").$Enums.ProjectStatus;
         clientId: string | null;
         title: string;
-        description: string | null;
         startDate: Date | null;
         endDate: Date | null;
         deadline: Date | null;

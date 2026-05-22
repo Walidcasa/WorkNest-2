@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import * as OpenAILib from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 
 @Injectable()
 export class AiService {
   private openai: any;
+  private anthropic: Anthropic | null = null;
 
   constructor(
     private prisma: PrismaService,
@@ -15,133 +17,194 @@ export class AiService {
     this.openai = new OpenAIConstructor({
       apiKey: this.configService.get<string>('OPENAI_API_KEY') || 'sk-mock',
     });
+
+    const anthropicKey = this.configService.get<string>('ANTHROPIC_API_KEY');
+    if (anthropicKey && !anthropicKey.includes('mock')) {
+      this.anthropic = new Anthropic({ apiKey: anthropicKey });
+    }
   }
 
   async generateInsight(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
-        transactions: true,
+        transactions: { orderBy: { date: 'desc' }, take: 50 },
         products: true,
         projects: true,
         clients: true,
-        activities: true,
+        activities: { orderBy: { date: 'desc' }, take: 30 },
       },
     });
 
     if (!user) return null;
 
     const lang = user.language || 'en';
+    const langName = lang === 'ar' ? 'Arabic' : lang === 'fr' ? 'French' : 'English';
 
     const totalRevenue = user.transactions?.filter(t => t.type === 'REVENUE').reduce((a, b) => a + b.amount, 0) || 0;
     const totalExpense = user.transactions?.filter(t => t.type === 'EXPENSE').reduce((a, b) => a + b.amount, 0) || 0;
     const profit = totalRevenue - totalExpense;
-
     const productiveTime = user.activities?.filter(a => a.level === 'PRODUCTIVE').reduce((acc, b) => acc + b.duration, 0) || 0;
     const wasteTime = user.activities?.filter(a => a.level === 'WASTE').reduce((acc, b) => acc + b.duration, 0) || 0;
-
     const activeClients = user.clients?.filter((c: any) => c.status === 'Active').length || 0;
     const lowStockProducts = user.products?.filter(p => p.stock <= p.lowStockAt).length || 0;
+    const activeProjects = user.projects?.filter((p: any) => p.status === 'IN_PROGRESS').length || 0;
+    const topCategories = this.getTopCategories(user.transactions || []);
 
-    const systemPrompt = `You are an elite AI Business Advisor for a SaaS platform called WorkNest/Clarity. 
-You provide extremely sharp, actionable, and data-driven insights. 
-Analyze the provided user data and return EXACTLY 3 insights formatted as a JSON array of objects.
-Do not use markdown blocks. Just return raw JSON.
-Each object must have:
-- "title": A short catchy title.
-- "description": 2-3 sentences of sharp business advice.
-- "type": One of "success", "warning", "info".
-- "metric": A relevant string like "+15% Revenue" or "Critical".
-The response language MUST BE in ${lang.toUpperCase()}.`;
+    const systemPrompt = `You are an elite AI Business Advisor for a SaaS platform called WorkNest.
+You analyze real user business data and deliver EXACTLY 3 sharp, actionable insights.
+Respond ONLY with a raw JSON array (no markdown). Each object must have:
+- "title": short catchy title (max 6 words)
+- "description": 2-3 sentences of sharp, specific, data-driven advice using the actual numbers
+- "type": one of "success", "warning", "info"
+- "metric": a relevant string like "+$2,400 profit" or "3 low-stock items"
+LANGUAGE: Respond entirely in ${langName}. Do not mix languages.`;
 
-    const userData = `
-User Data:
-- Total Revenue: $${totalRevenue}
-- Total Expenses: $${totalExpense}
-- Net Profit: $${profit}
-- Productive Minutes: ${productiveTime}
-- Wasted Minutes: ${wasteTime}
+    const userData = `User Business Data:
+- Account Type: ${user.accountType}
+- Total Revenue: $${totalRevenue.toFixed(2)}
+- Total Expenses: $${totalExpense.toFixed(2)}
+- Net Profit: $${profit.toFixed(2)}
+- Profit Margin: ${totalRevenue > 0 ? ((profit / totalRevenue) * 100).toFixed(1) : 0}%
+- Productive Time: ${productiveTime} minutes
+- Wasted Time: ${wasteTime} minutes
 - Active Clients: ${activeClients}
-- Products Low in Stock: ${lowStockProducts}
-    `;
+- Active Projects: ${activeProjects}
+- Low Stock Products: ${lowStockProducts}
+- Top Revenue Categories: ${topCategories}`;
 
-    const apiKey = this.configService.get<string>('OPENAI_API_KEY');
-    if (!apiKey || apiKey.includes('mock') || apiKey.trim() === '') {
-      return this.generateAlgorithmicInsights(profit, wasteTime, lowStockProducts, lang);
+    // Try Anthropic Claude first (best quality)
+    if (this.anthropic) {
+      try {
+        const message = await this.anthropic.messages.create({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1024,
+          messages: [{ role: 'user', content: `${systemPrompt}\n\n${userData}` }],
+        });
+        const text = (message.content[0] as any).text || '[]';
+        const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        return JSON.parse(cleaned);
+      } catch (e) {
+        console.error('Claude AI error:', e);
+      }
     }
 
-    try {
-      const response = await this.openai.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userData }
-        ],
-        temperature: 0.7,
-      });
-
-      const responseText = response.choices[0]?.message?.content || '[]';
-      return JSON.parse(responseText);
-    } catch (e) {
-      console.error('AI Error', e);
-      return this.generateAlgorithmicInsights(profit, wasteTime, lowStockProducts, lang);
+    // Try OpenAI
+    const openaiKey = this.configService.get<string>('OPENAI_API_KEY');
+    if (openaiKey && !openaiKey.includes('mock') && openaiKey.trim() !== '') {
+      try {
+        const response = await this.openai.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userData },
+          ],
+          temperature: 0.7,
+        });
+        const text = response.choices[0]?.message?.content || '[]';
+        return JSON.parse(text);
+      } catch (e) {
+        console.error('OpenAI error:', e);
+      }
     }
+
+    // Fallback: algorithmic
+    return this.generateAlgorithmicInsights(profit, wasteTime, lowStockProducts, activeProjects, lang);
   }
 
-  private generateAlgorithmicInsights(profit: number, wasteTime: number, lowStock: number, lang: string) {
+  private getTopCategories(transactions: any[]): string {
+    const map: Record<string, number> = {};
+    transactions.filter(t => t.type === 'REVENUE').forEach(t => {
+      map[t.category] = (map[t.category] || 0) + t.amount;
+    });
+    return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([cat, amt]) => `${cat} ($${amt.toFixed(0)})`).join(', ') || 'No data';
+  }
+
+  private generateAlgorithmicInsights(profit: number, wasteTime: number, lowStock: number, activeProjects: number, lang: string) {
     const isAr = lang === 'ar';
     const isFr = lang === 'fr';
-
     const insights = [];
 
-    // Financial Insight
     if (profit > 0) {
       insights.push({
-        title: isAr ? 'نمو مالي صحي' : isFr ? 'Croissance Financière Saine' : 'Healthy Financial Growth',
-        description: isAr ? `صافي ربحك إيجابي. فكر في استثمار جزء من ${profit}$ في التسويق.` : isFr ? `Votre bénéfice net est positif. Pensez à réinvestir une partie de ${profit}$ en marketing.` : `Your net profit is positive. Consider reinvesting a portion of $${profit} in marketing.`,
+        title: isAr ? 'نمو مالي صحي' : isFr ? 'Croissance Financière' : 'Healthy Financial Growth',
+        description: isAr
+          ? `صافي ربحك ${profit.toFixed(0)}$ إيجابي. فكر في إعادة استثمار 20% منه في تطوير أعمالك.`
+          : isFr
+          ? `Votre bénéfice net est de ${profit.toFixed(0)}$. Réinvestissez 20% pour accélérer votre croissance.`
+          : `Your net profit is $${profit.toFixed(0)}. Consider reinvesting 20% back into marketing or operations to compound growth.`,
         type: 'success',
-        metric: `+$${profit}`
+        metric: `+$${profit.toFixed(0)}`,
       });
     } else {
       insights.push({
-        title: isAr ? 'تحذير السيولة النقدية' : isFr ? 'Alerte Trésorerie' : 'Cash Flow Warning',
-        description: isAr ? 'مصاريفك تتجاوز إيراداتك. راجع نفقاتك فوراً.' : isFr ? 'Vos dépenses dépassent vos revenus. Révisez vos dépenses.' : 'Your expenses exceed your revenue. Review your burn rate immediately.',
+        title: isAr ? 'تحذير: نفقات تتجاوز الإيرادات' : isFr ? 'Alerte Trésorerie' : 'Burn Rate Alert',
+        description: isAr
+          ? 'مصاريفك تتجاوز إيراداتك. راجع النفقات وحدد ما يمكن تقليصه فوراً.'
+          : isFr
+          ? 'Vos dépenses dépassent vos revenus. Identifiez les postes de coûts à réduire immédiatement.'
+          : `Your expenses exceed revenue by $${Math.abs(profit).toFixed(0)}. Review your top cost categories and cut non-essential spending immediately.`,
         type: 'warning',
-        metric: 'Review'
+        metric: `-$${Math.abs(profit).toFixed(0)}`,
       });
     }
 
-    // Productivity Insight
     if (wasteTime > 120) {
       insights.push({
-        title: isAr ? 'تسرب الوقت' : isFr ? 'Fuite de Temps' : 'Time Leakage',
-        description: isAr ? `قمت بتسجيل ${wasteTime} دقيقة كأنشطة غير منتجة. جرب تقنية بومودورو.` : isFr ? `Vous avez enregistré ${wasteTime} minutes improductives. Essayez la méthode Pomodoro.` : `You've logged ${wasteTime} minutes of unproductive time. Try the Pomodoro technique.`,
+        title: isAr ? 'تسرب وقت مقلق' : isFr ? 'Perte de Productivité' : 'Productivity Drain',
+        description: isAr
+          ? `سجلت ${wasteTime} دقيقة غير منتجة. طبّق تقنية بومودورو: 25 دقيقة عمل، 5 راحة.`
+          : isFr
+          ? `Vous avez enregistré ${wasteTime} minutes improductives. Essayez la technique Pomodoro pour récupérer ces heures.`
+          : `You've logged ${wasteTime} unproductive minutes. Block distractions with app timers and use 25/5 Pomodoro sprints to reclaim focus.`,
         type: 'warning',
-        metric: `-${wasteTime}m`
+        metric: `-${wasteTime}m wasted`,
       });
     } else {
       insights.push({
-        title: isAr ? 'تركيز عالي' : isFr ? 'Haute Concentration' : 'Laser Focus',
-        description: isAr ? 'مستويات إنتاجيتك ممتازة اليوم. حافظ على هذا الزخم.' : isFr ? 'Votre niveau de productivité est excellent. Continuez.' : 'Your productivity levels are excellent. Keep up the momentum.',
+        title: isAr ? 'إنتاجية عالية' : isFr ? 'Excellente Productivité' : 'Peak Productivity',
+        description: isAr
+          ? 'مستوى إنتاجيتك ممتاز. حافظ على هذا الزخم ووسّع ساعات العمل المركّز.'
+          : isFr
+          ? 'Votre niveau de productivité est excellent. Maintenez cette dynamique et planifiez vos tâches les plus importantes en matinée.'
+          : 'Your productivity levels are excellent. Schedule your most cognitively demanding work in the morning to maintain this momentum.',
         type: 'success',
-        metric: 'Peak'
+        metric: 'High focus',
       });
     }
 
-    // Operations Insight
     if (lowStock > 0) {
       insights.push({
-        title: isAr ? 'تحذير المخزون' : isFr ? 'Alerte Stock' : 'Inventory Alert',
-        description: isAr ? `هناك ${lowStock} منتجات على وشك النفاذ. قم بطلب المخزون الآن.` : isFr ? `Il y a ${lowStock} produits en rupture de stock imminente.` : `You have ${lowStock} items running low. Restock now to avoid lost sales.`,
+        title: isAr ? 'تحذير المخزون' : isFr ? 'Stock Critique' : 'Inventory Alert',
+        description: isAr
+          ? `${lowStock} منتجات على وشك النفاذ. أعد الطلب الآن لتفادي خسارة المبيعات وإحباط العملاء.`
+          : isFr
+          ? `${lowStock} produits sont en rupture imminente. Passez commande maintenant pour éviter les pertes de ventes.`
+          : `${lowStock} products are critically low. Reorder immediately — stockouts cost 2-3x more in lost sales than the reorder cost.`,
         type: 'warning',
-        metric: `${lowStock} Items`
+        metric: `${lowStock} items critical`,
+      });
+    } else if (activeProjects > 0) {
+      insights.push({
+        title: isAr ? 'مشاريع نشطة' : isFr ? 'Projets en Cours' : 'Projects On Track',
+        description: isAr
+          ? `لديك ${activeProjects} مشاريع نشطة. تأكد من تحديث التقدم بانتظام وتواصل مع العملاء.`
+          : isFr
+          ? `${activeProjects} projets actifs en cours. Mettez à jour leur avancement et communiquez régulièrement avec vos clients.`
+          : `You have ${activeProjects} active projects. Keep momentum by doing a quick daily standup and updating progress percentages for client visibility.`,
+        type: 'info',
+        metric: `${activeProjects} active`,
       });
     } else {
       insights.push({
-        title: isAr ? 'عمليات مستقرة' : isFr ? 'Opérations Stables' : 'Stable Operations',
-        description: isAr ? 'جميع العمليات في حالة ممتازة.' : isFr ? 'Toutes les opérations sont stables.' : 'All operations are stable.',
+        title: isAr ? 'عمليات مستقرة' : isFr ? 'Opérations Stables' : 'Operations Stable',
+        description: isAr
+          ? 'جميع العمليات في حالة جيدة. الوقت المثالي لتوسيع قاعدة عملائك.'
+          : isFr
+          ? 'Vos opérations sont stables. Profitez-en pour prospecter de nouveaux clients.'
+          : 'All operations running smoothly. Use this stable period to invest in client acquisition or product development.',
         type: 'info',
-        metric: 'Stable'
+        metric: 'Stable',
       });
     }
 

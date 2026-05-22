@@ -3,25 +3,25 @@ export declare class ActivitiesService {
     private prisma;
     constructor(prisma: PrismaService);
     log(userId: string, data: any): Promise<{
-        level: import(".prisma/client").$Enums.ProductivityLevel;
+        name: string;
         id: string;
-        userId: string;
+        createdAt: Date;
         category: string;
         date: Date;
-        createdAt: Date;
-        name: string;
+        userId: string;
+        level: import(".prisma/client").$Enums.ProductivityLevel;
         duration: number;
         startTime: Date | null;
         endTime: Date | null;
     }>;
     findToday(userId: string): Promise<{
-        level: import(".prisma/client").$Enums.ProductivityLevel;
+        name: string;
         id: string;
-        userId: string;
+        createdAt: Date;
         category: string;
         date: Date;
-        createdAt: Date;
-        name: string;
+        userId: string;
+        level: import(".prisma/client").$Enums.ProductivityLevel;
         duration: number;
         startTime: Date | null;
         endTime: Date | null;

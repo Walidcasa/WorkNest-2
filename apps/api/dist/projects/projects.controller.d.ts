@@ -4,11 +4,11 @@ export declare class ProjectsController {
     constructor(projectsService: ProjectsService);
     findAll(req: any): Promise<({
         client: {
-            id: string;
-            userId: string;
-            createdAt: Date;
-            name: string;
             email: string | null;
+            name: string;
+            id: string;
+            createdAt: Date;
+            userId: string;
             phone: string | null;
             status: string;
             totalPaid: number;
@@ -17,12 +17,12 @@ export declare class ProjectsController {
         };
     } & {
         id: string;
-        userId: string;
         createdAt: Date;
+        description: string | null;
+        userId: string;
         status: import(".prisma/client").$Enums.ProjectStatus;
         clientId: string | null;
         title: string;
-        description: string | null;
         startDate: Date | null;
         endDate: Date | null;
         deadline: Date | null;
@@ -30,12 +30,12 @@ export declare class ProjectsController {
     })[]>;
     create(req: any, data: any): Promise<{
         id: string;
-        userId: string;
         createdAt: Date;
+        description: string | null;
+        userId: string;
         status: import(".prisma/client").$Enums.ProjectStatus;
         clientId: string | null;
         title: string;
-        description: string | null;
         startDate: Date | null;
         endDate: Date | null;
         deadline: Date | null;
@@ -43,12 +43,12 @@ export declare class ProjectsController {
     }>;
     update(req: any, id: string, data: any): Promise<{
         id: string;
-        userId: string;
         createdAt: Date;
+        description: string | null;
+        userId: string;
         status: import(".prisma/client").$Enums.ProjectStatus;
         clientId: string | null;
         title: string;
-        description: string | null;
         startDate: Date | null;
         endDate: Date | null;
         deadline: Date | null;
@@ -56,12 +56,12 @@ export declare class ProjectsController {
     }>;
     remove(req: any, id: string): Promise<{
         id: string;
-        userId: string;
         createdAt: Date;
+        description: string | null;
+        userId: string;
         status: import(".prisma/client").$Enums.ProjectStatus;
         clientId: string | null;
         title: string;
-        description: string | null;
         startDate: Date | null;
         endDate: Date | null;
         deadline: Date | null;

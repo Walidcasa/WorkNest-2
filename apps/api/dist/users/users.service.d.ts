@@ -3,15 +3,9 @@ export declare class UsersService {
     private prisma;
     constructor(prisma: PrismaService);
     updateProfile(userId: string, data: any): Promise<{
-        id: string;
-        createdAt: Date;
-        name: string;
         email: string;
-        passwordHash: string;
+        name: string;
         phoneNumber: string | null;
-        emailVerified: boolean;
-        verifyToken: string | null;
-        role: import(".prisma/client").$Enums.Role;
         accountType: import(".prisma/client").$Enums.AccountType;
         industry: string | null;
         profession: string | null;
@@ -19,16 +13,22 @@ export declare class UsersService {
         currency: string;
         language: string;
         theme: string;
+        id: string;
+        passwordHash: string;
+        emailVerified: boolean;
+        verifyToken: string | null;
+        role: import(".prisma/client").$Enums.Role;
         plan: import(".prisma/client").$Enums.Plan;
         trialEndsAt: Date | null;
+        createdAt: Date;
         updatedAt: Date;
     }>;
     findOne(userId: string): Promise<{
-        id: string;
-        name: string;
         email: string;
+        name: string;
         phoneNumber: string;
         accountType: import(".prisma/client").$Enums.AccountType;
+        id: string;
         plan: import(".prisma/client").$Enums.Plan;
     }>;
 }

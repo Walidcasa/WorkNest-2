@@ -5,23 +5,23 @@ export declare class ClientsController {
     findAll(req: any): Promise<({
         projects: {
             id: string;
-            userId: string;
             createdAt: Date;
+            description: string | null;
+            userId: string;
             status: import(".prisma/client").$Enums.ProjectStatus;
             clientId: string | null;
             title: string;
-            description: string | null;
             startDate: Date | null;
             endDate: Date | null;
             deadline: Date | null;
             progress: number;
         }[];
     } & {
-        id: string;
-        userId: string;
-        createdAt: Date;
-        name: string;
         email: string | null;
+        name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         phone: string | null;
         status: string;
         totalPaid: number;
@@ -34,11 +34,11 @@ export declare class ClientsController {
         totalPending: number;
     }>;
     create(req: any, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
-        name: string;
         email: string | null;
+        name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         phone: string | null;
         status: string;
         totalPaid: number;
@@ -46,11 +46,11 @@ export declare class ClientsController {
         notes: string | null;
     }>;
     update(req: any, id: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
-        name: string;
         email: string | null;
+        name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         phone: string | null;
         status: string;
         totalPaid: number;
@@ -58,11 +58,11 @@ export declare class ClientsController {
         notes: string | null;
     }>;
     remove(req: any, id: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
-        name: string;
         email: string | null;
+        name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         phone: string | null;
         status: string;
         totalPaid: number;

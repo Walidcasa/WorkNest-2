@@ -3,10 +3,10 @@ export declare class EmployeesService {
     private prisma;
     constructor(prisma: PrismaService);
     create(userId: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         position: string;
         salary: number;
         workSchedule: string | null;
@@ -14,10 +14,10 @@ export declare class EmployeesService {
         paymentStatus: import(".prisma/client").$Enums.PayStatus;
     }>;
     findAll(userId: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         position: string;
         salary: number;
         workSchedule: string | null;
@@ -25,10 +25,10 @@ export declare class EmployeesService {
         paymentStatus: import(".prisma/client").$Enums.PayStatus;
     }[]>;
     findOne(id: string, userId: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         position: string;
         salary: number;
         workSchedule: string | null;
@@ -36,10 +36,10 @@ export declare class EmployeesService {
         paymentStatus: import(".prisma/client").$Enums.PayStatus;
     }>;
     update(id: string, userId: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         position: string;
         salary: number;
         workSchedule: string | null;
@@ -47,10 +47,10 @@ export declare class EmployeesService {
         paymentStatus: import(".prisma/client").$Enums.PayStatus;
     }>;
     remove(id: string, userId: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         position: string;
         salary: number;
         workSchedule: string | null;

@@ -12,22 +12,22 @@ export declare class AdminService {
         })[];
     }>;
     getAllUsers(): Promise<{
-        id: string;
-        createdAt: Date;
-        name: string;
         email: string;
+        name: string;
+        id: string;
         emailVerified: boolean;
         role: import(".prisma/client").$Enums.Role;
         plan: import(".prisma/client").$Enums.Plan;
+        createdAt: Date;
     }[]>;
     updateUser(targetId: string, data: {
         role?: string;
         plan?: string;
         suspended?: boolean;
     }): Promise<{
-        id: string;
-        name: string;
         email: string;
+        name: string;
+        id: string;
         emailVerified: boolean;
         role: import(".prisma/client").$Enums.Role;
         plan: import(".prisma/client").$Enums.Plan;

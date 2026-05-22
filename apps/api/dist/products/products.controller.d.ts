@@ -3,10 +3,10 @@ export declare class ProductsController {
     private readonly productsService;
     constructor(productsService: ProductsService);
     findAll(req: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         purchasePrice: number;
         sellingPrice: number;
         stock: number;
@@ -16,10 +16,10 @@ export declare class ProductsController {
         lowStockAt: number;
     }[]>;
     create(req: any, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         purchasePrice: number;
         sellingPrice: number;
         stock: number;
@@ -29,10 +29,10 @@ export declare class ProductsController {
         lowStockAt: number;
     }>;
     update(req: any, id: string, data: any): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         purchasePrice: number;
         sellingPrice: number;
         stock: number;
@@ -42,10 +42,10 @@ export declare class ProductsController {
         lowStockAt: number;
     }>;
     remove(req: any, id: string): Promise<{
-        id: string;
-        userId: string;
-        createdAt: Date;
         name: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
         purchasePrice: number;
         sellingPrice: number;
         stock: number;

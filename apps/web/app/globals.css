@@ -109,3 +109,29 @@ body {
 .dark thead.bg-gray-50 {
   background-color: rgb(15, 23, 42) !important;
 }
+
+/* Arabic RTL */
+[dir="rtl"] .sidebar-link { flex-direction: row-reverse; }
+[dir="rtl"] .border-l-4 { border-left: none; border-right-width: 4px; }
+[dir="rtl"] .border-l-8 { border-left: none; border-right-width: 8px; }
+[dir="rtl"] .pl-8 { padding-left: 0; padding-right: 2rem; }
+[dir="rtl"] .pr-0 { padding-right: 0; padding-left: 0; }
+
+/* Page transition animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-page { animation: fadeInUp 0.35s ease both; }
+.animate-fade { animation: fadeIn 0.25s ease both; }
+
+/* Stagger children */
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 60ms; }
+.stagger > *:nth-child(3) { animation-delay: 120ms; }
+.stagger > *:nth-child(4) { animation-delay: 180ms; }

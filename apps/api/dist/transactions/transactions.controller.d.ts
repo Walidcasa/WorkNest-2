@@ -4,23 +4,23 @@ export declare class TransactionsController {
     constructor(transactionsService: TransactionsService);
     create(req: any, data: any): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        label: string;
         date: Date;
-        createdAt: Date;
+        userId: string;
+        label: string;
     }>;
     findAll(req: any, query: any): Promise<{
         id: string;
-        userId: string;
+        createdAt: Date;
         type: import(".prisma/client").$Enums.FinanceType;
         amount: number;
         category: string;
-        label: string;
         date: Date;
-        createdAt: Date;
+        userId: string;
+        label: string;
     }[]>;
     getSummary(req: any): Promise<{
         totalIncome: number;
