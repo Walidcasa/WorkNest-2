@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">WorkNest</string>
+    <string name="title_activity_main">WorkNest</string>
+    <string name="package_name">com.worknest.app</string>
+    <string name="custom_url_scheme">com.worknest.app</string>
+</resources>
