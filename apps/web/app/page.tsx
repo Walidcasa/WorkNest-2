@@ -83,7 +83,7 @@ export default function Home() {
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent2/20 blur-[120px] rounded-full animate-pulse" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent1/20 blur-[120px] rounded-full animate-pulse" />
 
-      <nav className="fixed top-0 w-full p-6 flex justify-between items-center max-w-7xl">
+      <nav className="fixed top-0 w-full p-6 flex justify-between items-center max-w-7xl z-50 pointer-events-auto">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-accent2 rounded-xl flex items-center justify-center shadow-lg shadow-accent2/30">
             <Bot className="text-white w-6 h-6" />
