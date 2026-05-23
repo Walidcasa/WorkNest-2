@@ -62,7 +62,7 @@ export function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmployeeModa
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="e.g. Michael Scott"
+              placeholder={t('placeholderName')}
               className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20 font-bold"
             />
           </div>
@@ -74,7 +74,7 @@ export function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmployeeModa
               required
               value={form.position}
               onChange={(e) => setForm({ ...form, position: e.target.value })}
-              placeholder="e.g. Regional Manager"
+              placeholder={t('placeholderPosition')}
               className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20 font-bold"
             />
           </div>

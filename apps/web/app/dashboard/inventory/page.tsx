@@ -111,7 +111,7 @@ export default function InventoryPage() {
                   <tr key={product.id} className="hover:bg-secondary/20 transition-colors group">
                     <td className="px-6 py-4">
                       <p className="font-black text-text uppercase tracking-tight">{product.name}</p>
-                      <p className="text-[10px] font-bold text-text/40 uppercase">{product.supplier || 'No Supplier'}</p>
+                      <p className="text-[10px] font-bold text-text/40 uppercase">{product.supplier || t('noSupplier')}</p>
                     </td>
                     <td className="px-6 py-4 font-bold text-text/60">${product.purchasePrice}</td>
                     <td className="px-6 py-4 font-bold text-text">${product.sellingPrice}</td>

@@ -58,18 +58,18 @@ export function AddClientModal({ isOpen, onClose, onSuccess }: AddClientModalPro
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="e.g. Jane Doe"
+              placeholder={t('placeholderName')}
               className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20 font-bold"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-text/50 mb-2 uppercase tracking-widest">{t('configuration')}</label>
+            <label className="block text-xs font-bold text-text/50 mb-2 uppercase tracking-widest">{t('companyName')}</label>
             <input
               type="text"
               value={form.company}
               onChange={(e) => setForm({ ...form, company: e.target.value })}
-              placeholder="e.g. Acme Corp"
+              placeholder={t('placeholderCompany')}
               className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20 font-bold"
             />
           </div>
@@ -86,7 +86,7 @@ export function AddClientModal({ isOpen, onClose, onSuccess }: AddClientModalPro
               />
             </div>
             <div className="flex-1">
-              <label className="block text-xs font-bold text-text/50 mb-2 uppercase tracking-widest">{t('fullName')}</label>
+              <label className="block text-xs font-bold text-text/50 mb-2 uppercase tracking-widest">{t('phoneNumber')}</label>
               <input
                 type="tel"
                 value={form.phone}
@@ -104,7 +104,7 @@ export function AddClientModal({ isOpen, onClose, onSuccess }: AddClientModalPro
               className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20 font-bold"
             >
               <option value="Active">{t('active')}</option>
-              <option value="New">New</option>
+              <option value="New">{t('statusNew')}</option>
               <option value="Inactive">{t('inactive')}</option>
             </select>
           </div>

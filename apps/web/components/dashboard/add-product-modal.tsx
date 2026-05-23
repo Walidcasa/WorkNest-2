@@ -68,7 +68,7 @@ export function AddProductModal({ isOpen, onClose, onSuccess }: AddProductModalP
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="e.g. Premium Coffee Beans"
+              placeholder={t('placeholderProduct')}
               className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20 font-bold"
             />
           </div>
@@ -129,7 +129,7 @@ export function AddProductModal({ isOpen, onClose, onSuccess }: AddProductModalP
               type="text"
               value={form.supplier}
               onChange={(e) => setForm({ ...form, supplier: e.target.value })}
-              placeholder="e.g. Global Distributors"
+              placeholder={t('placeholderSupplier')}
               className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20 font-bold"
             />
           </div>

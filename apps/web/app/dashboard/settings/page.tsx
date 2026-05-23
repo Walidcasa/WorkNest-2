@@ -71,7 +71,7 @@ export default function SettingsPage() {
     <div className="space-y-8 max-w-3xl mx-auto">
       <div>
         <h1 className="text-3xl font-bold font-outfit text-text">{t('settings')}</h1>
-        <p className="text-text/60 mt-1">Manage your account and preferences.</p>
+        <p className="text-text/60 mt-1">{t('manageAccountPrefs')}</p>
       </div>
 
       {/* Avatar Picker */}
@@ -83,12 +83,12 @@ export default function SettingsPage() {
 
         {/* Avatar preview + grid */}
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-text/60 mb-3">Avatar</label>
+          <label className="block text-sm font-semibold text-text/60 mb-3">{t('avatar')}</label>
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 rounded-full bg-accent2/10 flex items-center justify-center text-3xl border-2 border-accent2/30">
               {selectedAvatar || <span className="text-accent2 text-xl font-black">{form.name ? form.name.charAt(0).toUpperCase() : '?'}</span>}
             </div>
-            <p className="text-xs text-text/40">Choisi ton avatar</p>
+            <p className="text-xs text-text/40">{t('chooseAvatar')}</p>
           </div>
           <div className="grid grid-cols-10 gap-2">
             {AVATARS.map((emoji) => (
@@ -108,7 +108,7 @@ export default function SettingsPage() {
           </div>
           {selectedAvatar && (
             <button onClick={() => setSelectedAvatar('')} className="mt-2 text-xs text-text/40 hover:text-danger transition-colors">
-              Remove avatar
+              {t('removeAvatar')}
             </button>
           )}
         </div>
@@ -173,20 +173,20 @@ export default function SettingsPage() {
         <div className="mt-6 pt-6 border-t border-text/5 flex items-center justify-between">
           <div>
             <p className="font-semibold text-text text-sm">{t('themeAppearance')}</p>
-            <p className="text-xs text-text/40 mt-0.5">Toggle between light and dark mode</p>
+            <p className="text-xs text-text/40 mt-0.5">{t('themeToggleHint')}</p>
           </div>
           <div className="flex bg-secondary/50 rounded-xl p-1">
             <button
               onClick={() => setTheme('light')}
               className={`p-2 rounded-lg flex items-center gap-2 transition-all ${theme === 'light' ? 'bg-white shadow-sm text-accent2' : 'text-text/60 hover:text-text'}`}
             >
-              <Sun className="w-4 h-4" /> <span className="text-xs font-bold">Light</span>
+              <Sun className="w-4 h-4" /> <span className="text-xs font-bold">{t('lightMode')}</span>
             </button>
             <button
               onClick={() => setTheme('dark')}
               className={`p-2 rounded-lg flex items-center gap-2 transition-all ${theme === 'dark' ? 'bg-white shadow-sm text-accent2' : 'text-text/60 hover:text-text'}`}
             >
-              <Moon className="w-4 h-4" /> <span className="text-xs font-bold">Dark</span>
+              <Moon className="w-4 h-4" /> <span className="text-xs font-bold">{t('darkMode')}</span>
             </button>
           </div>
         </div>
@@ -196,12 +196,12 @@ export default function SettingsPage() {
       <div className="glass-card bg-white p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-accent1/10 rounded-xl"><Bell className="w-5 h-5 text-accent1" /></div>
-          <h2 className="text-lg font-bold font-outfit">Notifications</h2>
+          <h2 className="text-lg font-bold font-outfit">{t('notifications')}</h2>
         </div>
         <div className="space-y-4">
           {[
-            { key: 'notifications', label: 'Push Notifications', desc: 'Get alerts for important activity' },
-            { key: 'weeklyReport', label: 'Weekly Report', desc: 'Receive a weekly business summary' },
+            { key: 'notifications', label: t('pushNotifications'), desc: t('pushNotificationsDesc') },
+            { key: 'weeklyReport', label: t('weeklyReportLabel'), desc: t('weeklyReportDesc') },
           ].map(item => (
             <div key={item.key} className="flex items-center justify-between p-4 rounded-xl border border-text/5">
               <div>
@@ -227,7 +227,7 @@ export default function SettingsPage() {
           className="btn-primary px-8 py-3 flex items-center gap-2 font-bold rounded-xl shadow-lg shadow-accent2/20"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          {saved ? '✓ Saved!' : saving ? 'Saving...' : t('saveChanges')}
+          {saved ? t('savedSuccess') : saving ? t('savingProgress') : t('saveChanges')}
         </button>
       </div>
     </div>

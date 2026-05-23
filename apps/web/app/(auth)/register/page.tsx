@@ -108,7 +108,7 @@ export default function RegisterPage() {
                     <input 
                       type="text" required value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      placeholder="John Doe"
+                      placeholder={t('placeholderName')}
                       className="w-full pl-11 pr-4 py-3 rounded-xl border border-text/10 focus:outline-none focus:ring-2 focus:ring-accent2/20"
                     />
                   </div>
@@ -126,7 +126,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-text/70 mb-2">{t('themeAppearance') === 'Theme' ? 'Phone Number' : (t('themeAppearance').includes('ظهر') ? 'رقم الهاتف' : 'Numéro de téléphone')}</label>
+                  <label className="block text-sm font-semibold text-text/70 mb-2">{t('phoneNumber')}</label>
                   <div className="flex gap-2">
                     <select 
                       value={form.countryCode}
@@ -144,7 +144,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-text/70 mb-2">{t('themeAppearance') === 'Theme' ? 'Password' : (t('themeAppearance').includes('ظهر') ? 'كلمة السر' : 'Mot de passe')}</label>
+                  <label className="block text-sm font-semibold text-text/70 mb-2">{t('password')}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text/30" />
                     <input 
@@ -186,9 +186,7 @@ export default function RegisterPage() {
 
                 <div className="p-4 bg-secondary/30 rounded-2xl">
                   <p className="text-xs text-text/60 leading-relaxed text-center">
-                    {form.accountType === 'COMPANY' 
-                      ? "Choose 'Company' if you manage a team and multiple business projects."
-                      : "Choose 'Personal' for tracking your private finances and daily productivity."}
+                    {form.accountType === 'COMPANY' ? t('companyTypeHint') : t('personalTypeHint')}
                   </p>
                 </div>
 

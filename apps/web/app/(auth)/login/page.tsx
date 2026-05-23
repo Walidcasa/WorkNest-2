@@ -65,7 +65,7 @@ export default function LoginPage() {
 
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-semibold text-text/70">{t('themeAppearance') === 'Theme' ? 'Password' : (t('themeAppearance').includes('ظهر') ? 'كلمة السر' : 'Mot de passe')}</label>
+                <label className="block text-sm font-semibold text-text/70">{t('password')}</label>
                 <a href="#" className="text-xs font-medium text-accent2 hover:underline">{t('forgotPassword')}</a>
               </div>
               <div className="relative">

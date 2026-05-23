@@ -94,7 +94,7 @@ export function AddTransactionModal({ isOpen, onClose, onSuccess }: AddTransacti
               required
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
-              placeholder="e.g. Software, Salary, Client Payment"
+              placeholder={t('placeholderCategory')}
               className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20"
             />
           </div>

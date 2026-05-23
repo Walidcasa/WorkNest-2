@@ -1,10 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Check, CreditCard, Zap, Loader2 } from 'lucide-react'
+import { Check, CreditCard, Loader2 } from 'lucide-react'
 import { apiRequest } from '@/lib/api-client'
+import { useTranslation } from '@/components/providers/i18n-provider'
 
 export default function BillingPage() {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
   const [status, setStatus] = useState<any>(null)
   const [plans, setPlans] = useState<any[]>([])
@@ -44,22 +46,21 @@ export default function BillingPage() {
       }
     } catch (err) {
       console.error('Checkout failed', err)
-      alert('Failed to initiate checkout. Please try again.')
     }
   }
 
   const uiPlans = [
-    { 
+    {
       id: 'free',
-      name: 'Free Trial', 
-      price: '0', 
-      period: '7 days', 
-      features: ['All core modules', 'AI basic insights', 'Limited projects'],
+      name: t('freePlan'),
+      price: '0',
+      period: t('monthly'),
+      features: [t('allCoreModules'), t('featAiBasic'), t('limitedProjects')],
       isCurrent: status?.plan === 'FREE_TRIAL'
     },
     ...plans.map(p => ({
       ...p,
-      period: p.interval === 'month' ? 'month' : 'year',
+      period: p.interval === 'month' ? t('monthly') : t('annual'),
       isCurrent: status?.plan === p.id.toUpperCase()
     }))
   ]
@@ -67,8 +68,8 @@ export default function BillingPage() {
   return (
     <div className="space-y-8 max-w-6xl mx-auto p-6 lg:p-10">
       <div className="text-center">
-        <h1 className="text-3xl font-black font-outfit text-text uppercase tracking-tight">Subscription & Billing</h1>
-        <p className="text-text/60 mt-2">Manage your plan and view your payment history.</p>
+        <h1 className="text-3xl font-black font-outfit text-text uppercase tracking-tight">{t('subscriptionBilling')}</h1>
+        <p className="text-text/60 mt-2">{t('managePlanPayments')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
@@ -78,16 +79,16 @@ export default function BillingPage() {
           }`}>
             {plan.id === 'monthly' && (
               <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent2 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
-                Most Popular
+                {t('mostPopular')}
               </div>
             )}
-            
+
             <h3 className="text-xl font-black font-outfit text-text uppercase tracking-tight">{plan.name}</h3>
             <div className="flex items-baseline gap-1 mt-4">
               <span className="text-4xl font-black font-outfit text-text">${plan.price}</span>
               <span className="text-text/40 text-xs font-bold uppercase">/{plan.period}</span>
             </div>
-            
+
             <ul className="mt-8 space-y-4 flex-1">
               {plan.features.map((feat: string) => (
                 <li key={feat} className="flex items-start gap-3 text-sm font-bold text-text/70">
@@ -97,31 +98,33 @@ export default function BillingPage() {
               ))}
             </ul>
 
-            <button 
+            <button
               onClick={() => !plan.isCurrent && plan.id !== 'free' && handleCheckout(plan.id)}
               disabled={plan.isCurrent || plan.id === 'free'}
               className={`mt-10 py-4 rounded-xl font-black uppercase tracking-widest transition-all text-xs ${
-                plan.isCurrent 
-                  ? 'bg-secondary text-text/40 cursor-default' 
+                plan.isCurrent
+                  ? 'bg-secondary text-text/40 cursor-default'
                   : 'btn-primary shadow-lg shadow-accent2/20 hover:scale-[1.02] active:scale-95'
               }`}
             >
-              {plan.isCurrent ? (plan.id === 'free' ? `Trial: ${status.daysLeft} days left` : 'Current Plan') : 'Upgrade Plan'}
+              {plan.isCurrent
+                ? (plan.id === 'free' ? `${status.daysLeft} ${t('trialDaysLeft')}` : t('currentPlan'))
+                : t('upgradePlan')}
             </button>
           </div>
         ))}
       </div>
 
       <div className="glass-card p-8 bg-white mt-12">
-        <h3 className="text-xl font-black font-outfit uppercase tracking-tight mb-6">Payment Method</h3>
+        <h3 className="text-xl font-black font-outfit uppercase tracking-tight mb-6">{t('paymentMethod')}</h3>
         <div className="flex flex-col sm:flex-row justify-between items-center p-6 border border-text/10 rounded-2xl gap-4">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-secondary rounded-xl">
               <CreditCard className="w-6 h-6 text-text/40" />
             </div>
             <div>
-              <p className="font-black text-text">No active payment method</p>
-              <p className="text-[10px] font-bold text-text/40 uppercase">Upgrade to add a card</p>
+              <p className="font-black text-text">{t('noPaymentMethod')}</p>
+              <p className="text-[10px] font-bold text-text/40 uppercase">{t('upgradeToAddCard')}</p>
             </div>
           </div>
         </div>
@@ -129,22 +132,22 @@ export default function BillingPage() {
 
       <div className="glass-card bg-white mt-8 overflow-hidden">
         <div className="p-6 border-b border-text/5">
-          <h3 className="font-black font-outfit uppercase tracking-tight">Billing History</h3>
+          <h3 className="font-black font-outfit uppercase tracking-tight">{t('billingHistory')}</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-secondary/50 text-text/40 text-[10px] uppercase tracking-widest">
               <tr>
-                <th className="px-6 py-4 font-black">Invoice</th>
-                <th className="px-6 py-4 font-black">Date</th>
-                <th className="px-6 py-4 font-black">Amount</th>
-                <th className="px-6 py-4 font-black">Status</th>
-                <th className="px-6 py-4 font-black text-right">Receipt</th>
+                <th className="px-6 py-4 font-black">{t('invoice')}</th>
+                <th className="px-6 py-4 font-black">{t('date')}</th>
+                <th className="px-6 py-4 font-black">{t('amount')}</th>
+                <th className="px-6 py-4 font-black">{t('status')}</th>
+                <th className="px-6 py-4 font-black text-right">{t('receipt')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-text/5 text-sm">
               <tr className="text-text/40">
-                <td colSpan={5} className="px-6 py-8 text-center font-bold italic">No billing history found</td>
+                <td colSpan={5} className="px-6 py-8 text-center font-bold italic">{t('noBillingHistory')}</td>
               </tr>
             </tbody>
           </table>

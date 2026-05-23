@@ -70,7 +70,7 @@ export function AddProjectModal({ isOpen, onClose, onSuccess }: AddProjectModalP
               required
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              placeholder="e.g. Website Redesign"
+              placeholder={t('placeholderProject')}
               className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20 font-bold"
             />
           </div>
@@ -117,7 +117,7 @@ export function AddProjectModal({ isOpen, onClose, onSuccess }: AddProjectModalP
               <label className="block text-xs font-bold text-text/50 mb-2 uppercase tracking-widest">{t('date')}</label>
               <input
                 type="text"
-                placeholder="e.g. Oct 24, 2026"
+                placeholder={t('placeholderDeadline')}
                 value={form.deadline}
                 onChange={(e) => setForm({ ...form, deadline: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl border border-text/10 bg-transparent focus:outline-none focus:ring-2 focus:ring-accent2/20 font-bold"
