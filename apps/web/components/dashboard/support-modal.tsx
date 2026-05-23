@@ -26,9 +26,7 @@ export function SupportModal({ isOpen, onClose }: SupportModalProps) {
     e.preventDefault()
     setLoading(true)
     try {
-      // Mocking the support request since endpoint might not exist yet
-      // In a real app, this would be: await apiRequest('/support', { method: 'POST', body: JSON.stringify(formData) })
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      await apiRequest('/support', { method: 'POST', body: JSON.stringify(formData) })
       setSuccess(true)
       setTimeout(() => {
         setSuccess(false)

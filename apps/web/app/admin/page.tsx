@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { apiRequest } from '@/lib/api-client'
-import { Users, DollarSign, TrendingUp, Globe, Loader2, UserCheck, ChevronDown } from 'lucide-react'
+import { Users, DollarSign, TrendingUp, Globe, Loader2, UserCheck, ChevronDown, MessageSquare, AlertTriangle, CheckCircle2, Clock } from 'lucide-react'
 import { useTranslation } from '@/components/providers/i18n-provider'
 
 const ROLES = ['USER', 'ADMIN', 'SUPER_ADMIN']
@@ -12,6 +12,7 @@ export default function AdminDashboard() {
   const { t } = useTranslation()
   const [stats, setStats] = useState<any>(null)
   const [users, setUsers] = useState<any[]>([])
+  const [tickets, setTickets] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [openMenu, setOpenMenu] = useState<string | null>(null)
   const [updating, setUpdating] = useState<string | null>(null)
@@ -19,12 +20,14 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [statsData, usersData] = await Promise.all([
+        const [statsData, usersData, ticketsData] = await Promise.all([
           apiRequest('/admin/stats'),
           apiRequest('/admin/users'),
+          apiRequest('/support/admin'),
         ])
         setStats(statsData)
         setUsers(usersData)
+        setTickets(Array.isArray(ticketsData) ? ticketsData : [])
       } catch (err) {
         console.error('Failed to fetch admin data', err)
       } finally {
@@ -33,6 +36,13 @@ export default function AdminDashboard() {
     }
     fetchData()
   }, [])
+
+  const updateTicketStatus = async (ticketId: string, status: string) => {
+    try {
+      await apiRequest(`/support/admin/${ticketId}`, { method: 'PATCH', body: JSON.stringify({ status }) })
+      setTickets(prev => prev.map(t => t.id === ticketId ? { ...t, status } : t))
+    } catch (e) { console.error(e) }
+  }
 
   const updateUser = async (userId: string, patch: { role?: string; plan?: string; suspended?: boolean }) => {
     setUpdating(userId)
@@ -198,6 +208,85 @@ export default function AdminDashboard() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Support Tickets */}
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-gray-50 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-accent2/10 rounded-xl">
+              <MessageSquare className="w-5 h-5 text-accent2" />
+            </div>
+            <div>
+              <h3 className="text-lg font-black font-outfit uppercase tracking-tight">Support Tickets</h3>
+              <p className="text-xs text-gray-400 mt-0.5">{tickets.filter(t => t.status === 'OPEN').length} open tickets</p>
+            </div>
+          </div>
+        </div>
+        {tickets.length === 0 ? (
+          <div className="p-12 text-center text-gray-400">
+            <CheckCircle2 className="w-10 h-10 mx-auto mb-3 opacity-30" />
+            <p className="font-bold text-sm">No support tickets yet</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-gray-50">
+            {tickets.map((ticket) => (
+              <div key={ticket.id} className="p-6 flex items-start justify-between gap-4 hover:bg-gray-50/50 transition-colors">
+                <div className="flex items-start gap-4 flex-1 min-w-0">
+                  <div className={`p-2 rounded-xl shrink-0 mt-0.5 ${
+                    ticket.severity === 'HIGH' ? 'bg-red-100' :
+                    ticket.severity === 'MEDIUM' ? 'bg-amber-100' : 'bg-gray-100'
+                  }`}>
+                    <AlertTriangle className={`w-4 h-4 ${
+                      ticket.severity === 'HIGH' ? 'text-red-500' :
+                      ticket.severity === 'MEDIUM' ? 'text-amber-500' : 'text-gray-400'
+                    }`} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-black text-sm text-gray-900 truncate">{ticket.subject}</p>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase shrink-0 ${
+                        ticket.severity === 'HIGH' ? 'bg-red-100 text-red-600' :
+                        ticket.severity === 'MEDIUM' ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-500'
+                      }`}>{ticket.severity}</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mb-2 line-clamp-2">{ticket.description}</p>
+                    <div className="flex items-center gap-3 text-[10px] text-gray-400 font-semibold">
+                      <span>{ticket.user?.name} · {ticket.user?.email}</span>
+                      <span>{new Date(ticket.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${
+                    ticket.status === 'RESOLVED' ? 'bg-green-100 text-green-600' :
+                    ticket.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'
+                  }`}>{ticket.status}</span>
+                  <div className="flex gap-1">
+                    {ticket.status !== 'IN_PROGRESS' && (
+                      <button
+                        onClick={() => updateTicketStatus(ticket.id, 'IN_PROGRESS')}
+                        className="p-1.5 rounded-lg hover:bg-blue-50 text-blue-500 transition-colors"
+                        title="Mark In Progress"
+                      >
+                        <Clock className="w-4 h-4" />
+                      </button>
+                    )}
+                    {ticket.status !== 'RESOLVED' && (
+                      <button
+                        onClick={() => updateTicketStatus(ticket.id, 'RESOLVED')}
+                        className="p-1.5 rounded-lg hover:bg-green-50 text-green-500 transition-colors"
+                        title="Mark Resolved"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Close menu on outside click */}

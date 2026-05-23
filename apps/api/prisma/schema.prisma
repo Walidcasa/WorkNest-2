@@ -29,16 +29,17 @@ model User {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  subscription  Subscription?
-  finances      Finance[]
-  products      Product[]
-  employees     Employee[]
-  clients       Client[]
-  projects      Project[]
-  aiInsights    AiInsight[]
-  notifications Notification[]
-  transactions  Transaction[]
-  activities    Activity[]
+  subscription    Subscription?
+  finances        Finance[]
+  products        Product[]
+  employees       Employee[]
+  clients         Client[]
+  projects        Project[]
+  aiInsights      AiInsight[]
+  notifications   Notification[]
+  transactions    Transaction[]
+  activities      Activity[]
+  supportTickets  SupportTicket[]
 }
 
 enum Role {
@@ -225,4 +226,28 @@ model Notification {
   body      String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model SupportTicket {
+  id          String         @id @default(cuid())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id])
+  subject     String
+  description String
+  severity    TicketSeverity @default(MEDIUM)
+  status      TicketStatus   @default(OPEN)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+enum TicketSeverity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
 }
