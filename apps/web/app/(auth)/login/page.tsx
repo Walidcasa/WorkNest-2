@@ -20,8 +20,8 @@ export default function LoginPage() {
     setError('')
     try {
       const res = await authApi.login(form)
-      localStorage.setItem('worknest_token', res.access_token)
-      localStorage.setItem('worknest_user', JSON.stringify(res.user))
+      localStorage.setItem('nexus_token', res.access_token)
+      localStorage.setItem('nexus_user', JSON.stringify(res.user))
       router.push('/dashboard')
     } catch (err: any) {
       setError(err.message)

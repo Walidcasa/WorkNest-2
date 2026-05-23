@@ -17,7 +17,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const savedLang = localStorage.getItem('worknest_lang') as Language
+    const savedLang = localStorage.getItem('nexus_lang') as Language
     if (savedLang && translations[savedLang]) {
       setLangState(savedLang)
     }
@@ -26,7 +26,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   const setLang = (newLang: Language) => {
     setLangState(newLang)
-    localStorage.setItem('worknest_lang', newLang)
+    localStorage.setItem('nexus_lang', newLang)
     // Optionally update user preferences in DB via API call here
   }
 

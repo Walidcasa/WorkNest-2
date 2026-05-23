@@ -1,7 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:4000/v1';
 
 export async function apiRequest(endpoint: string, options: RequestInit = {}) {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('worknest_token') : null;
+  const token = typeof window !== 'undefined' ? localStorage.getItem('nexus_token') : null;
 
   const headers = {
     'Content-Type': 'application/json',

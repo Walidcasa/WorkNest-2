@@ -21,14 +21,14 @@ export function Sidebar() {
   const [accountType, setAccountType] = useState<string>('COMPANY')
 
   const handleLogout = () => {
-    localStorage.removeItem('worknest_token')
-    localStorage.removeItem('worknest_user')
+    localStorage.removeItem('nexus_token')
+    localStorage.removeItem('nexus_user')
     router.push('/login')
   }
 
   useEffect(() => {
     setMounted(true)
-    const stored = localStorage.getItem('worknest_user')
+    const stored = localStorage.getItem('nexus_user')
     if (stored) {
       try { setAccountType(JSON.parse(stored).accountType || 'COMPANY') } catch {}
     }
@@ -70,7 +70,7 @@ export function Sidebar() {
         <div className="w-8 h-8 bg-accent2 rounded-lg flex items-center justify-center shadow-lg shadow-accent2/20">
           <Zap className="text-white w-5 h-5 fill-current" />
         </div>
-        <span className="text-xl font-bold font-outfit text-text tracking-tight uppercase">WorkNest</span>
+        <span className="text-xl font-bold font-outfit text-text tracking-tight uppercase">NEXUS</span>
       </div>
 
       {accountType === 'PERSONAL' && (

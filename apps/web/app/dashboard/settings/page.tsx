@@ -31,7 +31,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     setMounted(true)
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('worknest_user') : null
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('nexus_user') : null
     if (stored) {
       try {
         const user = JSON.parse(stored)
@@ -41,9 +41,9 @@ export default function SettingsPage() {
     }
     apiRequest('/users/me').then((user: any) => {
       setForm(f => ({ ...f, name: user.name || '', email: user.email || '', currency: user.currency || 'USD' }))
-      const stored2 = localStorage.getItem('worknest_user')
+      const stored2 = localStorage.getItem('nexus_user')
       const existing = stored2 ? JSON.parse(stored2) : {}
-      localStorage.setItem('worknest_user', JSON.stringify({ ...existing, ...user }))
+      localStorage.setItem('nexus_user', JSON.stringify({ ...existing, ...user }))
     }).catch(() => {})
   }, [])
 
@@ -54,11 +54,11 @@ export default function SettingsPage() {
         method: 'PATCH',
         body: JSON.stringify({ name: form.name, currency: form.currency, language: lang }),
       })
-      const stored = localStorage.getItem('worknest_user')
+      const stored = localStorage.getItem('nexus_user')
       const existing = stored ? JSON.parse(stored) : {}
       const next = { ...existing, ...updated, avatar: selectedAvatar }
-      localStorage.setItem('worknest_user', JSON.stringify(next))
-      window.dispatchEvent(new Event('worknest_avatar_changed'))
+      localStorage.setItem('nexus_user', JSON.stringify(next))
+      window.dispatchEvent(new Event('nexus_avatar_changed'))
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch {}

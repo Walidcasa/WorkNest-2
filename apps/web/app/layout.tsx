@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' })
 
 export const metadata: Metadata = {
-  title: 'WorkNest — AI-Powered Business Management',
+  title: 'NEXUS — AI-Powered Business Management',
   description: 'Run your business. Let AI do the thinking. Manage finances, projects, and employees in one place.',
 }
 

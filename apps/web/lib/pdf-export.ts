@@ -21,7 +21,7 @@ export async function exportToPDF(elementId: string, filename: string) {
   pdf.setFontSize(18)
   pdf.setFont('helvetica', 'bold')
   pdf.setTextColor(129, 140, 248)
-  pdf.text('WorkNest', 14, 14)
+  pdf.text('NEXUS', 14, 14)
   pdf.setFontSize(10)
   pdf.setTextColor(100, 100, 100)
   pdf.text(`Exported: ${new Date().toLocaleDateString()}`, 14, 20)

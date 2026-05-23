@@ -22,19 +22,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const notifsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const token = localStorage.getItem('worknest_token')
+    const token = localStorage.getItem('nexus_token')
     if (!token) { router.replace('/login'); return }
-    const stored = localStorage.getItem('worknest_user')
+    const stored = localStorage.getItem('nexus_user')
     if (stored) {
       try { const u = JSON.parse(stored); setUserName(u.name || ''); setUserAvatar(u.avatar || '') } catch {}
     }
     setAuthChecked(true)
 
     const onAvatarChange = () => {
-      const s = localStorage.getItem('worknest_user')
+      const s = localStorage.getItem('nexus_user')
       if (s) { try { setUserAvatar(JSON.parse(s).avatar || '') } catch {} }
     }
-    window.addEventListener('worknest_avatar_changed', onAvatarChange)
+    window.addEventListener('nexus_avatar_changed', onAvatarChange)
 
     // Generate + poll notifications
     apiRequest('/notifications/generate').catch(() => {})
@@ -45,7 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const interval = setInterval(fetchUnread, 30000)
 
     return () => {
-      window.removeEventListener('worknest_avatar_changed', onAvatarChange)
+      window.removeEventListener('nexus_avatar_changed', onAvatarChange)
       clearInterval(interval)
     }
   }, [router])

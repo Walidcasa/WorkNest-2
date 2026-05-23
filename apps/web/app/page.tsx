@@ -88,7 +88,7 @@ export default function Home() {
           <div className="w-10 h-10 bg-accent2 rounded-xl flex items-center justify-center shadow-lg shadow-accent2/30">
             <Bot className="text-white w-6 h-6" />
           </div>
-          <span className="text-2xl font-bold font-outfit text-text">Clarity</span>
+          <span className="text-2xl font-bold font-outfit text-text">NEXUS</span>
         </div>
         <div className="hidden md:flex gap-8">
           <a href="#features" className="nav-link">{t('features')}</a>

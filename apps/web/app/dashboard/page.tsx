@@ -12,7 +12,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<any>(null)
 
   useEffect(() => {
-    const stored = localStorage.getItem('worknest_user')
+    const stored = localStorage.getItem('nexus_user')
     const user = stored ? JSON.parse(stored) : {}
     const type = user.accountType || 'COMPANY'
     setAccountType(type)

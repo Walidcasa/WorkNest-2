@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.worknest.app',
-  appName: 'WorkNest',
+  appName: 'NEXUS',
   webDir: 'out',
   server: {
     // Load the live Vercel deployment — no static export needed
