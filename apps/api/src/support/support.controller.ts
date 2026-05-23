@@ -15,6 +15,18 @@ export class SupportController {
     return this.supportService.createTicket(req.user.userId, body);
   }
 
+  @Get('my')
+  @UseGuards(JwtAuthGuard)
+  async getMyTickets(@Request() req: any) {
+    return this.supportService.getMyTickets(req.user.userId);
+  }
+
+  @Post(':id/reply')
+  @UseGuards(JwtAuthGuard)
+  async userReply(@Request() req: any, @Param('id') id: string, @Body() body: { message: string }) {
+    return this.supportService.sendMessage(id, req.user.userId, body.message, false);
+  }
+
   @Get('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
@@ -27,5 +39,12 @@ export class SupportController {
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
   async updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
     return this.supportService.updateTicketStatus(id, body.status);
+  }
+
+  @Post('admin/:id/reply')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.SUPER_ADMIN, Role.ADMIN)
+  async adminReply(@Request() req: any, @Param('id') id: string, @Body() body: { message: string }) {
+    return this.supportService.sendMessage(id, req.user.userId, body.message, true);
   }
 }

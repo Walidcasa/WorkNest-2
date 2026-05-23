@@ -39,7 +39,8 @@ model User {
   notifications   Notification[]
   transactions    Transaction[]
   activities      Activity[]
-  supportTickets  SupportTicket[]
+  supportTickets   SupportTicket[]
+  ticketMessages   TicketMessage[]
 }
 
 enum Role {
@@ -229,15 +230,27 @@ model Notification {
 }
 
 model SupportTicket {
-  id          String         @id @default(cuid())
+  id          String          @id @default(cuid())
   userId      String
-  user        User           @relation(fields: [userId], references: [id])
+  user        User            @relation(fields: [userId], references: [id])
   subject     String
   description String
-  severity    TicketSeverity @default(MEDIUM)
-  status      TicketStatus   @default(OPEN)
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  severity    TicketSeverity  @default(MEDIUM)
+  status      TicketStatus    @default(OPEN)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  messages    TicketMessage[]
+}
+
+model TicketMessage {
+  id        String        @id @default(cuid())
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id])
+  senderId  String
+  sender    User          @relation(fields: [senderId], references: [id])
+  isAdmin   Boolean       @default(false)
+  message   String
+  createdAt DateTime      @default(now())
 }
 
 enum TicketSeverity {

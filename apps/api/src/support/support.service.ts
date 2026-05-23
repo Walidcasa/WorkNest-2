@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -17,10 +17,29 @@ export class SupportService {
     });
   }
 
+  async getMyTickets(userId: string) {
+    return this.prisma.supportTicket.findMany({
+      where: { userId },
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        messages: {
+          orderBy: { createdAt: 'asc' },
+          include: { sender: { select: { name: true } } },
+        },
+      },
+    });
+  }
+
   async getAllTickets() {
     return this.prisma.supportTicket.findMany({
-      orderBy: { createdAt: 'desc' },
-      include: { user: { select: { name: true, email: true } } },
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        user: { select: { name: true, email: true } },
+        messages: {
+          orderBy: { createdAt: 'asc' },
+          include: { sender: { select: { name: true } } },
+        },
+      },
     });
   }
 
@@ -29,5 +48,21 @@ export class SupportService {
       where: { id: ticketId },
       data: { status: status as any },
     });
+  }
+
+  async sendMessage(ticketId: string, senderId: string, message: string, isAdmin: boolean) {
+    if (!isAdmin) {
+      const ticket = await this.prisma.supportTicket.findUnique({ where: { id: ticketId } });
+      if (!ticket || ticket.userId !== senderId) throw new ForbiddenException();
+    }
+    const msg = await this.prisma.ticketMessage.create({
+      data: { ticketId, senderId, message, isAdmin },
+      include: { sender: { select: { name: true } } },
+    });
+    await this.prisma.supportTicket.update({
+      where: { id: ticketId },
+      data: { updatedAt: new Date() },
+    });
+    return msg;
   }
 }
