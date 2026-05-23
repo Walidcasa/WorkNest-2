@@ -89,6 +89,30 @@ LANGUAGE: Respond entirely in ${langName}. Do not mix languages.`;
       }
     }
 
+    // Try Google Gemini (free tier)
+    const geminiKey = this.configService.get<string>('GEMINI_API_KEY');
+    if (geminiKey && geminiKey.trim() !== '') {
+      try {
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: `${systemPrompt}\n\n${userData}` }] }],
+              generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
+            }),
+          },
+        );
+        const geminiData = await geminiRes.json() as any;
+        const text = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
+        const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        return JSON.parse(cleaned);
+      } catch (e) {
+        console.error('Gemini AI error:', e);
+      }
+    }
+
     // Try OpenAI
     const openaiKey = this.configService.get<string>('OPENAI_API_KEY');
     if (openaiKey && !openaiKey.includes('mock') && openaiKey.trim() !== '') {
