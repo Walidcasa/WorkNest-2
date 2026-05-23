@@ -10,15 +10,15 @@ export default function Home() {
   const [billing, setBilling] = useState<'monthly' | 'quarterly' | 'annual'>('monthly')
 
   const prices = {
-    basic:  { monthly: 99,  quarterly: 83,  annual: 66  },
-    pro:    { monthly: 199, quarterly: 166, annual: 133 },
-    agency: { monthly: 499, quarterly: 433, annual: 333 },
+    basic:  { monthly: 9,  quarterly: 7,  annual: 6  },
+    pro:    { monthly: 19, quarterly: 16, annual: 13 },
+    agency: { monthly: 49, quarterly: 43, annual: 33 },
   }
 
   const totals = {
-    basic:  { monthly: 99,  quarterly: 249,  annual: 799   },
-    pro:    { monthly: 199, quarterly: 499,  annual: 1599  },
-    agency: { monthly: 499, quarterly: 1299, annual: 3999  },
+    basic:  { monthly: 9,  quarterly: 21,  annual: 69   },
+    pro:    { monthly: 19, quarterly: 45,  annual: 149  },
+    agency: { monthly: 49, quarterly: 129, annual: 399  },
   }
 
   const savings = { monthly: null, quarterly: '15%', annual: '33%' }
@@ -212,12 +212,13 @@ export default function Home() {
                 {/* Price */}
                 <div>
                   <div className="flex items-end gap-1">
+                    <span className="text-text/50 font-bold mb-2 mr-1">$</span>
                     <span className="text-5xl font-black font-outfit text-text">{price}</span>
-                    <span className="text-text/50 font-bold mb-2">MAD{t('perMonth')}</span>
+                    <span className="text-text/50 font-bold mb-2">{t('perMonth')}</span>
                   </div>
                   {billing !== 'monthly' && (
                     <p className="text-xs text-text/40 mt-1">
-                      {total} MAD — {billingLabel}
+                      ${total} — {billingLabel}
                     </p>
                   )}
                 </div>
