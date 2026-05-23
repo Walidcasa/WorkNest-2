@@ -49,11 +49,11 @@ export function Sidebar() {
 
   const sellerNav = [
     { name: t('dashboard'), href: '/dashboard', icon: LayoutDashboard },
-    { name: 'My Products', href: '/dashboard/inventory', icon: Package },
-    { name: 'Sales & Orders', href: '/dashboard/finances', icon: ShoppingBag },
+    { name: t('myProducts'), href: '/dashboard/inventory', icon: Package },
+    { name: t('salesAndOrders'), href: '/dashboard/finances', icon: ShoppingBag },
     { name: t('clients'), href: '/dashboard/clients', icon: Users },
     { name: t('time'), href: '/dashboard/time', icon: Clock },
-    { name: 'Revenue Report', href: '/dashboard/cash-flow', icon: TrendingUp },
+    { name: t('revenueReport'), href: '/dashboard/cash-flow', icon: TrendingUp },
     { name: t('aiInsights'), href: '/dashboard/ai-insights', icon: Sparkles },
   ]
 
@@ -75,7 +75,7 @@ export function Sidebar() {
 
       {accountType === 'PERSONAL' && (
         <div className="px-2 py-1.5 bg-accent2/10 rounded-xl">
-          <p className="text-[10px] font-black text-accent2 uppercase tracking-widest text-center">Seller Mode</p>
+          <p className="text-[10px] font-black text-accent2 uppercase tracking-widest text-center">{t('sellerMode')}</p>
         </div>
       )}
 
