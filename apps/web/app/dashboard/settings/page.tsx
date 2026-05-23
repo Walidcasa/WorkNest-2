@@ -52,7 +52,7 @@ export default function SettingsPage() {
     try {
       const updated = await apiRequest('/users/profile', {
         method: 'PATCH',
-        body: JSON.stringify({ name: form.name, currency: form.currency }),
+        body: JSON.stringify({ name: form.name, currency: form.currency, language: lang }),
       })
       const stored = localStorage.getItem('worknest_user')
       const existing = stored ? JSON.parse(stored) : {}

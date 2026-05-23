@@ -235,6 +235,12 @@ export const translations = {
     spendingByCategory: 'Spending by Category',
     noDataExposeReality: 'No data yet. Expose your reality.',
     vsLastMonth: 'vs LAST MONTH',
+    goalTypeFinancial: 'Financial',
+    goalTypeProductivity: 'Productivity',
+    goalRevenueYTD: 'Revenue Goal YTD',
+    goalWeeklyHours: 'Weekly Productive Hours',
+    goalEmergencyFund: 'Emergency Fund',
+    decDeadline: 'Dec 31',
   },
   fr: {
     dashboard: 'Aperçu',
@@ -470,6 +476,12 @@ export const translations = {
     spendingByCategory: 'Dépenses par Catégorie',
     noDataExposeReality: 'Pas encore de données. Exposez votre réalité.',
     vsLastMonth: 'par rapport au MOIS DERNIER',
+    goalTypeFinancial: 'Financier',
+    goalTypeProductivity: 'Productivité',
+    goalRevenueYTD: 'Objectif Revenu Annuel',
+    goalWeeklyHours: 'Heures Productives Hebdomadaires',
+    goalEmergencyFund: "Fonds d'Urgence",
+    decDeadline: '31 Déc',
   },
   ar: {
     dashboard: 'نظرة عامة',
@@ -705,5 +717,11 @@ export const translations = {
     spendingByCategory: 'الإنفاق حسب الفئة',
     noDataExposeReality: 'لا توجد بيانات بعد. واجه واقعك.',
     vsLastMonth: 'مقارنة بالشهر الماضي',
+    goalTypeFinancial: 'مالي',
+    goalTypeProductivity: 'إنتاجية',
+    goalRevenueYTD: 'هدف الإيرادات السنوي',
+    goalWeeklyHours: 'ساعات الإنتاجية الأسبوعية',
+    goalEmergencyFund: 'صندوق الطوارئ',
+    decDeadline: '31 ديسمبر',
   }
 }

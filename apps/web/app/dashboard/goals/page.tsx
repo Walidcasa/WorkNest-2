@@ -16,10 +16,10 @@ import { useTranslation } from '@/components/providers/i18n-provider'
 export default function GoalsPage() {
   const { t } = useTranslation()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [goals, setGoals] = useState([
-    { id: 1, type: 'FINANCIAL', title: 'Revenue Goal YTD', target: 120000, current: 45000, color: 'bg-blue-600' },
-    { id: 2, type: 'PRODUCTIVITY', title: 'Weekly Productive Hours', target: 40, current: 28, color: 'bg-amber-500' },
-    { id: 3, type: 'FINANCIAL', title: 'Emergency Fund', target: 20000, current: 15000, color: 'bg-emerald-500' },
+  const [goals] = useState([
+    { id: 1, type: 'FINANCIAL', titleKey: 'goalRevenueYTD' as const, target: 120000, current: 45000, color: 'bg-blue-600' },
+    { id: 2, type: 'PRODUCTIVITY', titleKey: 'goalWeeklyHours' as const, target: 40, current: 28, color: 'bg-amber-500' },
+    { id: 3, type: 'FINANCIAL', titleKey: 'goalEmergencyFund' as const, target: 20000, current: 15000, color: 'bg-emerald-500' },
   ])
 
   return (
@@ -47,10 +47,10 @@ export default function GoalsPage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-text/40">{goal.type}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-text/40">{goal.type === 'FINANCIAL' ? t('goalTypeFinancial') : t('goalTypeProductivity')}</span>
                     {goal.current >= goal.target && <ShieldCheck className="w-3 h-3 text-success" />}
                   </div>
-                  <h3 className="text-xl font-black font-outfit tracking-tight uppercase">{goal.title}</h3>
+                  <h3 className="text-xl font-black font-outfit tracking-tight uppercase">{t(goal.titleKey)}</h3>
                 </div>
               </div>
               
@@ -77,7 +77,7 @@ export default function GoalsPage() {
 
             <div className="mt-8 pt-6 border-t border-text/5 flex justify-between items-center">
               <div className="flex items-center gap-2 text-[10px] font-bold text-text/40 uppercase tracking-widest">
-                <Flag className="w-3 h-3" /> {t('deadline')}: Dec 31, 2024
+                <Flag className="w-3 h-3" /> {t('deadline')}: {t('decDeadline')}, 2024
               </div>
               <button className="flex items-center gap-1 text-[10px] font-black text-accent2 uppercase tracking-widest group-hover:gap-2 transition-all">
                 {t('adjustTarget')} <ChevronRight className="w-3 h-3" />
