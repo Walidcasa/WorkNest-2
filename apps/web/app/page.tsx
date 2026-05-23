@@ -1,10 +1,82 @@
 'use client'
 
-import { ArrowRight, Bot, LayoutDashboard, LineChart, Users } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowRight, Bot, LayoutDashboard, LineChart, Check, Zap, Building2, User } from 'lucide-react'
+
 import { useTranslation } from '@/components/providers/i18n-provider'
 
 export default function Home() {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
+  const [billing, setBilling] = useState<'monthly' | 'quarterly' | 'annual'>('monthly')
+
+  const prices = {
+    basic:  { monthly: 99,  quarterly: 83,  annual: 66  },
+    pro:    { monthly: 199, quarterly: 166, annual: 133 },
+    agency: { monthly: 499, quarterly: 433, annual: 333 },
+  }
+
+  const totals = {
+    basic:  { monthly: 99,  quarterly: 249,  annual: 799   },
+    pro:    { monthly: 199, quarterly: 499,  annual: 1599  },
+    agency: { monthly: 499, quarterly: 1299, annual: 3999  },
+  }
+
+  const savings = { monthly: null, quarterly: '15%', annual: '33%' }
+
+  const billingLabel = billing === 'monthly' ? t('billedMonthly') : billing === 'quarterly' ? t('billedQuarterly') : t('billedAnnually')
+
+  const plans = [
+    {
+      key: 'basic',
+      name: t('planBasic'),
+      desc: t('planDescBasic'),
+      icon: User,
+      color: 'text-accent3',
+      bg: 'bg-accent3/10',
+      popular: false,
+      features: [t('feat5Clients'), t('featFinances'), t('featAiBasic')],
+      cta: t('getStarted'),
+      href: '/register',
+    },
+    {
+      key: 'pro',
+      name: t('planPro'),
+      desc: t('planDescPro'),
+      icon: Zap,
+      color: 'text-accent2',
+      bg: 'bg-accent2/10',
+      popular: true,
+      features: [
+        `${t('everythingIn')} ${t('planBasic')}`,
+        t('featUnlimited'),
+        t('featAiFull'),
+        t('featPdfInvoices'),
+        t('featReports'),
+        t('featPrioritySupport'),
+      ],
+      cta: t('getStarted'),
+      href: '/register',
+    },
+    {
+      key: 'agency',
+      name: t('planAgency'),
+      desc: t('planDescAgency'),
+      icon: Building2,
+      color: 'text-accent1',
+      bg: 'bg-accent1/10',
+      popular: false,
+      features: [
+        `${t('everythingIn')} ${t('planPro')}`,
+        t('featMultiCompany'),
+        t('featWhatsapp'),
+        t('featDedicatedSupport'),
+        t('featEarlyAccess'),
+      ],
+      cta: t('contactUs'),
+      href: '/register',
+    },
+  ]
+
   return (
     <main className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center p-6">
       {/* Background Blobs */}
@@ -72,6 +144,116 @@ export default function Home() {
             <p className="text-text/60">{feat.desc}</p>
           </div>
         ))}
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="w-full max-w-7xl mt-32 mb-20 z-10">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-black font-outfit text-text mb-4">{t('pricingTitle')}</h2>
+          <p className="text-text/60 text-lg">{t('pricingSubtitle')}</p>
+        </div>
+
+        {/* Billing Toggle */}
+        <div className="flex justify-center mb-12">
+          <div className="inline-flex bg-secondary/60 rounded-2xl p-1.5 gap-1">
+            {(['monthly', 'quarterly', 'annual'] as const).map((period) => (
+              <button
+                key={period}
+                onClick={() => setBilling(period)}
+                className={`relative px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  billing === period
+                    ? 'bg-white text-text shadow-md'
+                    : 'text-text/50 hover:text-text'
+                }`}
+              >
+                {period === 'monthly' ? t('monthly') : period === 'quarterly' ? t('quarterly') : t('annual')}
+                {period !== 'monthly' && (
+                  <span className="absolute -top-2.5 -right-2 bg-accent1 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">
+                    -{savings[period]}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Plans Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          {plans.map((plan) => {
+            const price = prices[plan.key as keyof typeof prices][billing]
+            const total = totals[plan.key as keyof typeof totals][billing]
+            return (
+              <div
+                key={plan.key}
+                className={`relative glass-card p-8 flex flex-col gap-6 transition-all duration-300 ${
+                  plan.popular
+                    ? 'border-2 border-accent2 shadow-2xl shadow-accent2/20 scale-105'
+                    : 'border border-text/10 hover:-translate-y-1'
+                }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="bg-accent2 text-white text-xs font-black px-4 py-1.5 rounded-full shadow-lg shadow-accent2/30 uppercase tracking-widest">
+                      {t('mostPopular')}
+                    </span>
+                  </div>
+                )}
+
+                {/* Plan header */}
+                <div>
+                  <div className={`w-12 h-12 ${plan.bg} rounded-2xl flex items-center justify-center mb-4`}>
+                    <plan.icon className={`w-6 h-6 ${plan.color}`} />
+                  </div>
+                  <h3 className="text-2xl font-black font-outfit text-text">{plan.name}</h3>
+                  <p className="text-sm text-text/50 mt-1">{plan.desc}</p>
+                </div>
+
+                {/* Price */}
+                <div>
+                  <div className="flex items-end gap-1">
+                    <span className="text-5xl font-black font-outfit text-text">{price}</span>
+                    <span className="text-text/50 font-bold mb-2">MAD{t('perMonth')}</span>
+                  </div>
+                  {billing !== 'monthly' && (
+                    <p className="text-xs text-text/40 mt-1">
+                      {total} MAD — {billingLabel}
+                    </p>
+                  )}
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-3 flex-1">
+                  {plan.features.map((feat, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm">
+                      <div className={`w-5 h-5 rounded-full ${plan.bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                        <Check className={`w-3 h-3 ${plan.color}`} />
+                      </div>
+                      <span className={`font-medium ${i === 0 && plan.key !== 'basic' ? 'text-text/40 italic' : 'text-text/70'}`}>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA */}
+                <a
+                  href={plan.href}
+                  className={`w-full py-3.5 rounded-xl text-sm font-black uppercase tracking-widest text-center transition-all ${
+                    plan.popular
+                      ? 'btn-primary shadow-lg shadow-accent2/20'
+                      : 'border-2 border-text/10 text-text hover:border-accent2 hover:text-accent2'
+                  }`}
+                >
+                  {plan.cta}
+                </a>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Free trial note */}
+        <p className="text-center text-sm text-text/40 mt-8 font-medium">
+          ✓ {t('freeTrial')} &nbsp;·&nbsp; ✓ {t('noCardRequired')}
+        </p>
       </section>
     </main>
   )
