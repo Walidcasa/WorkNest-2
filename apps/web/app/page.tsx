@@ -93,7 +93,7 @@ export default function Home() {
         <div className="hidden md:flex gap-8">
           <a href="#features" className="nav-link">{t('features')}</a>
           <a href="#pricing" className="nav-link">{t('pricing')}</a>
-          <a href="#about" className="nav-link">{t('about')}</a>
+          <a href="/about" className="nav-link">{t('about')}</a>
         </div>
         <a href="/login" className="btn-primary">
           {t('signIn')}
